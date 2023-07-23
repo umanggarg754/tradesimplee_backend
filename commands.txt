@@ -1,0 +1,12 @@
+# curl -i -X POST -H 'Content-Type: application/json' -d '{"name": "New item", "password": \
+"200900","linkiden":"svgfbba",'"email":"fbdfbdbb" \
+,"phone":"1234565377","whatsapp":"1234245374","summary":' '}' http://localhost:8080/api/user/createUser
+
+
+name : req.body.name,
+    password : await bcrypt.hash(req.body.password, salt),
+    linkedin : req.body.linkedin,
+    email : req.body.email,
+    phone: req.body.phone,
+    whatsapp: req.body.whatsapp,
+    summary: req.body.summary

@@ -1,8 +1,8 @@
 module.exports = {
   HOST: "localhost",
   USER: "postgres",
-  PASSWORD: "123",
-  DB: "testdb",
+  PASSWORD: "passpass",
+  DB: "uat",
   dialect: "postgres",
   pool: {
     max: 5,
@@ -11,3 +11,9 @@ module.exports = {
     idle: 10000
   }
 };
+
+// const user = await UserDAO.getUserByEmail('test@test.at')
+
+// user.password.set({hash: 'i am changed now'})
+
+// await user.password.save()

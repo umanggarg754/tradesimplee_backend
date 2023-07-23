@@ -19,5 +19,13 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
+db.users = require("./user.model.js")(sequelize, Sequelize);
+db.company = require("./company.model.js")(sequelize, Sequelize);
+db.contact = require("./contact.model.js")(sequelize, Sequelize);
+
+// await tutorials.reload();
+// await users.reload();
+
+
 
 module.exports = db;

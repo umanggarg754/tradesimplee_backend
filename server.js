@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
-
+const dotenv = require('dotenv');
 const app = express();
+const jwt = require('jsonwebtoken');
+dotenv.config();
 
 var corsOptions = {
   origin: "http://localhost:8081"
@@ -16,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = require("./app/models");
-db.sequelize.sync()
+db.sequelize.sync() 
   .then(() => {
     console.log("Synced db.");
   })
@@ -35,9 +37,19 @@ app.get("/", (req, res) => {
 });
 
 require("./app/routes/turorial.routes")(app);
+require("./app/routes/user.routes")(app);
+require("./app/routes/company.routes")(app);
+require("./app/routes/contact.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+
+// app.listen({port: PORT}, async() =>{
+//   await User.sync({ force: true });
+//   console.log(`Server is running on port ${PORT}.`);
+
+// });
