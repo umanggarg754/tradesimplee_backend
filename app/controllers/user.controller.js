@@ -61,36 +61,14 @@ exports.login = async(req,res,next)=>{
    };
 
 // TO FIX type of authentication using RSA or
+//     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTAwOTg1NjF9.-UMCthHKO8pvyzzr6ITHZLPpGmhgNMKCo5jRIpHD7xI"
 exports.authenticate = async(req,res,next)=>{
     try {
       let token = req.headers['authorization'].split(" ")[1];
-      let decoded = jwt.verify(token,process.env.SECRET);
+      let decoded = jwt.verify(token,process.env.SECRET,{algorithm: 'RS256'}); // HS256 RS256
       req.user = decoded;
       next();
     } catch(err){
       res.status(401).json({"msg":"Couldnt Authenticate"});
     }
-    };
-
-// understand importance of next() in middleware
-exports.getUserContacts = async (req, res,next) => {
-      try {
-        let contacts;
-        if (req.query.status) {
-          contacts = await contact.findAll({
-            where: { user_id: parseInt(req.query.user_id), status: req.query.status },
-          });
-        } else {
-          contacts = await contact.findAll({
-            where: { user_id: parseInt(req.query.user_id) },
-          });
-          console.log(contacts);
-        }
-        if (contacts === null || contacts.length === 0) {
-          return res.status(404).json({ msg: 'Contacts not found' });
-        }
-        res.status(200).json(contacts);
-      } catch (err) {
-        res.status(500).json({ msg: 'Internal Server Error' });
-      }
     };

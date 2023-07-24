@@ -17,10 +17,10 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true
         },
       user_id: {
-        type: Sequelize.INT
+        type: Sequelize.INTEGER
       },
       contact_id: {
-        type: Sequelize.INT
+        type: Sequelize.INTEGER
       },
       status: {
         type: Sequelize.STRING
@@ -35,7 +35,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING
       },
       date: {
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       },
         customer_notes: {
         type: Sequelize.STRING

@@ -1,19 +1,19 @@
-// order_id
-// prdouct_name
-// price
-// quantity
-// status
-// photo
-// other_details
-
 
 module.exports = (sequelize, Sequelize) => {
     const Product = sequelize.define("product", {
+      id : {
+            type: Sequelize.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
       order_id: {
-        type: Sequelize.INT
+        type: Sequelize.INTEGER
+      },
+      serial_num:{
+        type: Sequelize.INTEGER
       },
       product_name: {
-        type: Sequelize.product_name
+        type: Sequelize.STRING
       },
       price: {
         type: Sequelize.STRING

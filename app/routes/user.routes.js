@@ -1,35 +1,38 @@
 module.exports = app => {
     const users = require("../controllers/user.controller.js");
-  
+    const company = require("../controllers/company.controller.js");
+    const contact = require("../controllers/contact.controller.js");
+    const order = require("../controllers/order.controller.js");
+
     var router = require("express").Router();
   
     
-    // router.get("/getallUsers", users.findAllUsers);
-
+    //  general routes 
     router.post('/createUser',users.createUser ); 
-
     router.post('/login' , users.login);
-  
-    // router.get('/userhome',users.userhome);
 
-    router.get('/getUserContacts',users.getUserContacts); // should it be in contact controller?
-    // router.get('/getUserContacts',users.authenticate,users.getUserContacts); 
 
-    // // Retrieve all published Tutorials
-    // router.get("/published", tutorials.findAllPublished);
-    
+    // router.get('/:id',users.userhome); -- define authentication here ? 
   
-    // // Retrieve a single Tutorial with id
-    // router.get("/:id", tutorials.findOne);
-  
-    // // Update a Tutorial with id
-    // router.put("/:id", tutorials.update);
-  
-    // // Delete a Tutorial with id
-    // router.delete("/:id", tutorials.delete);
-  
-    // // Delete all Tutorials
-    // router.delete("/", tutorials.deleteAll);
-  
+    // add authentication 
+    // user contacts routes 
+    router.post("/:id/addContact", contact.addContact);
+    router.get('/:id/getUserContacts',users.authenticate,contact.getUserContacts);
+    router.get('/:id/getUserContacts/:contactId',contact.getContactDetails);
+    router.post("/:id/editContact/:contactId", contact.editContact);
+    // get one contact 
+
+    // user company routes 
+    router.post(":id/createCompany", company.createCompany);
+    router.get('/:id/Company/:copmanyId',copany.getCompanyDetails);
+    router.post(":id/editCompany", company.editCompany); // add autheticate middleware based on roles 
+
+
+    // user order routes  
+    router.post("/:id/createOrder", order.createOrder); // add autheticate middleware based on roles 
+    router.post("/:id/editOrder", order.editOrder); // add autheticate middleware based on roles 
+
+
+
     app.use("/api/user", router);
   };
