@@ -24,6 +24,7 @@ db.company = require("./company.model.js")(sequelize, Sequelize);
 db.contact = require("./contact.model.js")(sequelize, Sequelize);
 db.order = require("./order.model.js")(sequelize, Sequelize);
 db.product = require("./product.model.js")(sequelize, Sequelize);
+db.user_company = require("./user_company.model.js")(sequelize, Sequelize);
 
 // await tutorials.reload();
 // await users.reload();

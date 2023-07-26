@@ -1,5 +1,6 @@
 const db = require("../models");
 const company = db.company;
+const company_user_mapping = db.user_company;
 const Op = db.Sequelize.Op;
 
 
@@ -18,6 +19,7 @@ exports.createCompany = async(req, res,next) => {
     };
     created_company = await company.create(company_instance);
     // user_id add mapping to table 
+    add_mapping = await company_user_mapping.create({user_id:user_id,company_id:created_company.id,role:"owner"});
     res.status(201).json(created_company);
   };
 
@@ -45,12 +47,12 @@ exports.getCompanyDetails = async (req, res,next) => {
   try {
     let contacts;
     const user_id = parseInt(req.params.id)
-    const copmanyId = parseInt(req.params.copmanyId)
+    const companyId = parseInt(req.params.companyId)
     // get mappings from table based on user id 
     company_instance = await company.findOne({
-        where: {  id: copmanyId },
+        where: {  id: companyId },
       });
-    console.log(company_instance);
+    console.log(companyId);
     
     if (company_instance === null ) {
       return res.status(404).json({ msg: 'Company not found' });

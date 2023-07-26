@@ -12,26 +12,28 @@ module.exports = app => {
     router.post('/login' , users.login);
 
 
-    // router.get('/:id',users.userhome); -- define authentication here ? 
-  
+    // router.get('/:id',users.userhome); 
+    
+    // TODO add  authentication middleware everywhere
     // add authentication 
+
     // user contacts routes 
     router.post("/:id/addContact", contact.addContact);
-    router.get('/:id/getUserContacts',users.authenticate,contact.getUserContacts);
+    router.get('/:id/getUserContacts',users.authenticate,contact.getUserContacts); /// TOPP 
     router.get('/:id/getUserContacts/:contactId',contact.getContactDetails);
     router.post("/:id/editContact/:contactId", contact.editContact);
     // get one contact 
 
-    // user company routes 
+    // user company routes -- in future multiple companies 
     router.post(":id/createCompany", company.createCompany);
-    router.get('/:id/Company/:copmanyId',copany.getCompanyDetails);
-    router.post(":id/editCompany", company.editCompany); // add autheticate middleware based on roles 
+    // router.get('/:id/getUserCompany',users.authenticate,company.getUserCompany);
+    router.get('/:id/Company/:companyId',company.getCompanyDetails); // how does frontend knows company id --? from user init/login ? can we send list of companies 
+    router.post(":id/editCompany/:companyId", company.editCompany); // add autheticate middleware based on roles 
 
 
     // user order routes  
     router.post("/:id/createOrder", order.createOrder); // add autheticate middleware based on roles 
     router.post("/:id/editOrder", order.editOrder); // add autheticate middleware based on roles 
-
 
 
     app.use("/api/user", router);

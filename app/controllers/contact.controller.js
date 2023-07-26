@@ -50,9 +50,19 @@ exports.editContact = async(req, res,next) => {
 
 // understand importance of next() in middleware
 exports.getUserContacts = async (req, res,next) => {
+
+  const authenticatedUserId = req.user.id;
+  const user_id = parseInt(req.params.id);
+
+  console.log(user_id,authenticatedUserId)
+  if (user_id !== authenticatedUserId) {
+    // User is trying to access another user's data.
+    // Perform logout here, e.g., delete or invalidate the token.
+    return res.sendStatus(401); // Unauthorized
+  }
+
   try {
     let contacts;
-    const user_id = parseInt(req.params.id)
     if (req.query.status) {
       contacts = await contact.findAll({
         where: { user_id: parseInt(user_id), status: req.query.status },
@@ -83,8 +93,8 @@ exports.getContactDetails = async (req, res,next) => {
       });
     console.log(contacts);
     
-    if (contacts === null || contacts.length === 0) {
-      return res.status(404).json({ msg: 'Contacts not found' });
+    if (contacts === null ) {
+      return res.status(404).json({ msg: 'Contact not found' });
     }
     res.status(200).json(contacts);
   } catch (err) {

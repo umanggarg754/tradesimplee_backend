@@ -48,7 +48,7 @@ exports.login = async(req,res,next)=>{
   if(my_user){
      // const password_valid = await bcrypt.compare(req.body.password,my_user.password);
      if(req.body.password==my_user.password){
-         token = jwt.sign({ "id" : user.id,"email" : user.email,"first_name":user.first_name },process.env.SECRET);
+         token = jwt.sign({ "id" : my_user.id,"email" : my_user.email,"first_name":my_user.first_name },process.env.SECRET); // userId: user.id 
          res.status(200).json({ token : token });
      } else {
        res.status(400).json({ error : "Password Incorrect" });
@@ -60,15 +60,17 @@ exports.login = async(req,res,next)=>{
    
    };
 
-// TO FIX type of authentication using RSA or
-//     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTAwOTg1NjF9.-UMCthHKO8pvyzzr6ITHZLPpGmhgNMKCo5jRIpHD7xI"
-exports.authenticate = async(req,res,next)=>{
-    try {
+// TO FIX type of authentication using RSA or HMAC
+
+exports.authenticate = async(req, res, next)=>{
+      // const token = req.header('Authorization');
       let token = req.headers['authorization'].split(" ")[1];
-      let decoded = jwt.verify(token,process.env.SECRET,{algorithm: 'RS256'}); // HS256 RS256
-      req.user = decoded;
-      next();
-    } catch(err){
-      res.status(401).json({"msg":"Couldnt Authenticate"});
-    }
+      if (!token) return res.sendStatus(401); // Unauthorized
+    
+      jwt.verify(token, process.env.SECRET,{algorithm: 'RS256'}, (err, user) => {
+        if (err) return res.sendStatus(403); // Forbidden
+        req.user = user; // Decoded user information is set in req.user
+        console.log(user);
+        next();
+      });
     };
