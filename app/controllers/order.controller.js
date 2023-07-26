@@ -106,3 +106,39 @@ exports.editOrder = async(req, res,next) => {
         res.status(500).json({ error: 'Could not create order.' });
     }
   };
+
+// get order details for user 
+  exports.getUserOrders = async (req, res,next) => {
+
+
+    const authenticatedUserId = req.user.id;
+    const user_id = parseInt(req.params.id);
+
+    if (user_id !== authenticatedUserId) {
+        // User is trying to access another user's data.
+        // Perform logout here, e.g., delete or invalidate the token.
+        return res.sendStatus(401); // Unauthorized
+    }
+
+
+    try {
+        let order_instance;
+        if (req.query.status) {
+            order_instance = await order.findAll({
+            where: { user_id: parseInt(user_id), status: req.query.status },
+        })
+        } else {
+            order_instance = await order.findAll({
+            where: { user_id: parseInt(user_id) },
+        });
+        }
+
+        if (order_instance === null ) {
+          return res.status(404).json({ msg: 'Order not found' });
+        }
+        res.status(200).json(order_instance);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Could not get orders.' });
+    }
+  };

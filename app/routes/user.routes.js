@@ -13,7 +13,7 @@ module.exports = app => {
 
 
     // router.get('/:id',users.userhome); 
-    
+
     // TODO add  authentication middleware everywhere
     // add authentication 
 
@@ -34,6 +34,7 @@ module.exports = app => {
     // user order routes  
     router.post("/:id/createOrder", order.createOrder); // add autheticate middleware based on roles 
     router.post("/:id/editOrder", order.editOrder); // add autheticate middleware based on roles 
+    router.get('/:id/getUserOrders',users.authenticate,order.getUserOrders);  
 
 
     app.use("/api/user", router);
