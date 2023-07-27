@@ -34,8 +34,9 @@ module.exports = app => {
     // user order routes  
     router.post("/:id/createOrder", order.createOrder); // add autheticate middleware based on roles 
     router.post("/:id/editOrder", order.editOrder); // add autheticate middleware based on roles 
-    router.get('/:id/getUserOrders',users.authenticate,order.getUserOrders);  
+    router.get('/:id/getUserOrders',users.authenticate,order.getUserOrders);
 
+    router.post('/:id/sendmail',users.sendmail)
 
     app.use("/api/user", router);
   };

@@ -4,6 +4,7 @@ const contact = db.contact;
 const Op = db.Sequelize.Op;
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
+const mailer = require('nodemailer');
 
 // // Retrieve all users from the database.
 
@@ -74,3 +75,49 @@ exports.authenticate = async(req, res, next)=>{
         next();
       });
     };
+
+
+
+
+exports.sendmail = async(req,res,next)=>{
+
+  smtpProtocol = mailer.createTransport({
+    //service: "Gmail",
+    host: "sandbox.smtp.mailtrap.io",
+    auth: {
+        user: "3658b603557708",
+        pass: "03da5683d03791"
+    }
+    });
+
+//     // Host:
+// sandbox.smtp.mailtrap.io
+// Port:
+// 25 or 465 or 587 or 2525
+// Username:
+// 3658b603557708
+// Password:
+// 03da5683d03791
+// Auth:
+// PLAIN, LOGIN and CRAM-MD5
+// TLS:
+// Optional (STARTTLS on all ports)
+
+  var mailoption = {
+    from: "umanggarg754@gmail.com",
+    to: "bpsrockstar@gmail.com",
+    subject: "Test Mail",
+    html: 'Good Morning!'
+  };
+
+
+  await smtpProtocol.sendMail(mailoption, function(err, response){
+  if(err) {
+      console.log(err);
+      res.status(500).json({ msg : "Mail Not Sent" });
+  } 
+  console.log('Message Sent' + response.message);
+  smtpProtocol.close();
+  });
+  res.status(200).json({ msg : "Mail Sent" });
+  };
