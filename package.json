@@ -28,6 +28,10 @@
     "nodemailer": "^6.9.4",
     "pg": "^8.11.0",
     "pg-hstore": "^2.3.4",
+    "pg-native": "^3.0.1",
     "sequelize": "^6.32.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }

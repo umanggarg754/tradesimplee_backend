@@ -1,10 +1,22 @@
 const dbConfig = require("../config/db.config.js");
-
+const fs = require('fs');
 const Sequelize = require("sequelize");
+
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   dialect: dbConfig.dialect,
-
+  native: true,
+  ssl: true,
+  dialectOptions: {
+    project: "tradesimplee",
+    ssl: {
+      sslmode: 'require',
+      rejectUnauthorized: false,
+      // ca: fs.readFileSync(__dirname + '/../../ca-certificates.crt'),
+      // key: fs.readFileSync('path_to_client.key'),
+      // cert: fs.readFileSync(__dirname + '/../../ca-certificates.crt')
+    },
+  },
   pool: {
     max: dbConfig.pool.max,
     min: dbConfig.pool.min,
@@ -13,12 +25,19 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   }
 });
 
+
+// var sequelize = new Sequelize(process.env.DATABASE_URL, {
+//   dialect: 'postgres',
+//   dialectOptions: {
+//     ssl: true
+//   }
+// });
+
 const db = {};
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
 db.users = require("./user.model.js")(sequelize, Sequelize);
 db.company = require("./company.model.js")(sequelize, Sequelize);
 db.contact = require("./contact.model.js")(sequelize, Sequelize);
