@@ -43,6 +43,9 @@ module.exports = (sequelize, Sequelize) => {
         terms_and_conditions: {
         type: Sequelize.STRING
         },
+          currency: {
+        type: Sequelize.STRING
+          },
     },{
       timestamps: true,
       updatedAt: false,

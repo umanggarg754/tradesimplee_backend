@@ -3,6 +3,7 @@ const cors = require("cors");
 const dotenv = require('dotenv');
 const app = express();
 const jwt = require('jsonwebtoken');
+const fileUpload = require('express-fileupload');
 dotenv.config();
 
 var corsOptions = {
@@ -16,6 +17,7 @@ app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload());
 
 const db = require("./app/models");
 db.sequelize.sync() 

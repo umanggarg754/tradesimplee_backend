@@ -4,6 +4,13 @@ const product = db.product;
 const Op = db.Sequelize.Op;
 
 
+// for file upload 
+// <!DOCTYPE html>
+// <form action="/upload" method="POST" enctype="multipart/form-data">
+//     <input type="file" name="image" />
+//     <button type="submit">Upload</button>
+// </form>
+
 
 exports.createOrder = async(req, res,next) => {
     //res.status(201).json(req.body);
@@ -18,7 +25,8 @@ exports.createOrder = async(req, res,next) => {
         order_number: req.body.order_number,
         date: req.body.date,
         customer_notes: req.body.customer_notes,
-        terms_and_conditions: req.body.terms_and_conditions
+        terms_and_conditions: req.body.terms_and_conditions,
+        currency: req.body.currency
         };
         created_order = await order.create(order_instance);
         
@@ -41,8 +49,12 @@ exports.createOrder = async(req, res,next) => {
         for (const product_instance of products) {
         // Add order_id to each product
         product_instance.order_id = order_id;
-        // Create the product entry in the Product table
-        await product.create(product_instance);
+        product_create = await product.create(product_instance);
+        image = product_instance.photo;
+        image.name =  product_create.id + product_instance.serial_num + ".jpg"; // deal with other file extensions
+        if (/^image/.test(image.mimetype)) return res.sendStatus(400);
+        image.mv(__dirname + '/upload/' + image.name);
+        product.photo = image.name;
         }
 
         res.status(201).json(created_order);
@@ -71,7 +83,8 @@ exports.editOrder = async(req, res,next) => {
         order_number: req.body.order_number,
         date: req.body.date,
         customer_notes: req.body.customer_notes,
-        terms_and_conditions: req.body.terms_and_conditions
+        terms_and_conditions: req.body.terms_and_conditions,
+        currency: req.body.currency
         };
         created_order = await order.update(order_instance,{where:{id:req.order_id}});
         
