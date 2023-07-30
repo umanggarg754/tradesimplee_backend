@@ -25,18 +25,21 @@ module.exports = app => {
     // get one contact 
 
     // user company routes -- in future multiple companies 
-    router.post(":id/createCompany", company.createCompany);
+    router.post("/:id/createCompany", company.createCompany);
     // router.get('/:id/getUserCompany',users.authenticate,company.getUserCompany);
-    router.get('/:id/Company/:companyId',company.getCompanyDetails); // how does frontend knows company id --? from user init/login ? can we send list of companies 
-    router.post(":id/editCompany/:companyId", company.editCompany); // add autheticate middleware based on roles 
+    router.get('/:id/Company/:companyId',company.getCompanyDetails); 
+    router.post("/:id/editCompany/:companyId", company.editCompany); // add autheticate middleware based on roles 
 
 
     // user order routes  
-    router.post("/:id/createOrder", order.createOrder); // add autheticate middleware based on roles 
-    router.post("/:id/editOrder", order.editOrder); // add autheticate middleware based on roles 
-    router.get('/:id/getUserOrders',users.authenticate,order.getUserOrders);
+    router.post("/:id/createOrder", order.createOrder); // add autheticate middleware based on roles  TODO 
+    router.post("/:id/editOrder/:orderId", order.editOrder); // add autheticate middleware based on roles TODO
+    router.get('/:id/getUserOrders',users.authenticate,order.getUserOrders); 
 
-    router.post('/:id/sendmail',users.sendmail)
+    router.post('/:id/sendmail',users.sendmail) // TODO 
+    // router.get('/:id/getUserOrders/:orderId',order.getOrderDetails); // TODO
+    // router.get(:/id/createInvoice/:orderId',order.createInvoice); // TODO 
+
 
     app.use("/api/user", router);
   };

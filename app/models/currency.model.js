@@ -15,6 +15,6 @@ module.exports = (sequelize, Sequelize) => {
     {
       timestamps: false
     });
-    return Company;
+    return Currency;
   };
   

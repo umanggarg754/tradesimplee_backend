@@ -36,7 +36,7 @@ exports.editCompany = async(req, res,next) => {
     pan: req.body.pan,
     address: req.body.address,
     city: req.body.city};
-    updated_company = await company.update(company_instance,{where:{id:req.body.id}}); // wrong paramter for update 
+    updated_company = await company.update(company_instance,{where:{id:parseInt(req.params.companyId)}}); // wrong paramter for update 
     res.status(201).json(updated_company);
   };
   
