@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "vercel-build": "yarn global add libpq node-gyp sharp"
+    "vercel-build": "yarn global add postgresql libpq node-gyp sharp"
   },
   "keywords": [
     "nodejs",
