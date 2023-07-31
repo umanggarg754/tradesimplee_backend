@@ -17,11 +17,12 @@ app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-app.use(fileUpload());
+//app.use(fileUpload());
+// app.use('/public', express.static('public'));
 
 const db = require("./app/models");
 db.sequelize.sync() 
-  .then(() => {
+  .then(() => { 
     console.log("Synced db.");
   })
   .catch((err) => {
