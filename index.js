@@ -1,4 +1,7 @@
-require("./app/routes/user.routes")(app);
+
+const app = require('./server');
+
+// require("./app/routes/user.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
