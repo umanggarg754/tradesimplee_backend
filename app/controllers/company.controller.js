@@ -8,7 +8,7 @@ const Op = db.Sequelize.Op;
 exports.createCompany = async(req, res,next) => {
     //res.status(201).json(req.body);
     //add new user and return 201
-    user_id = parseInt(req.params.id)
+    user_id = parseInt(req.user.id)
     var company_instance = {
       name : req.body.name,
       ic_number : req.body.ic_number,
@@ -27,7 +27,7 @@ exports.createCompany = async(req, res,next) => {
   // edit comapny
 exports.editCompany = async(req, res,next) => {
   // 
-  user_id = parseInt(req.params.id)
+  user_id = parseInt(req.user.id)
   // allow only if owner in mappings table 
   var company_instance = {
     name : req.body.name,
@@ -46,8 +46,9 @@ exports.editCompany = async(req, res,next) => {
 exports.getCompanyDetails = async (req, res,next) => {
   try {
     let contacts;
-    const user_id = parseInt(req.params.id)
+    user_id = parseInt(req.user.id)
     const companyId = parseInt(req.params.companyId)
+    
     // get mappings from table based on user id 
     company_instance = await company.findOne({
         where: {  id: companyId },

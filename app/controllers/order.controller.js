@@ -179,15 +179,8 @@ exports.editOrder = async(req, res,next) => {
   exports.getUserOrders = async (req, res,next) => {
 
 
-    const authenticatedUserId = req.user.id;
-    const user_id = parseInt(req.params.id);
-
-    if (user_id !== authenticatedUserId) {
-        // User is trying to access another user's data.
-        // Perform logout here, e.g., delete or invalidate the token.
-        return res.sendStatus(401); // Unauthorized
-    }
-
+    const user_id = req.user.id;
+    
 
     try {
         let order_instance;

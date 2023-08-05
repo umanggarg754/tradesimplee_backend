@@ -7,7 +7,7 @@ module.exports = app => {
         // user company routes -- in future multiple companies 
     router.post("/createCompany", users.authenticate,company.createCompany);
     // router.get('/:id/getUserCompany',users.authenticate,company.getUserCompany);
-    router.get('/company/:companyId',users.authenticate,company.getCompanyDetails); 
+    router.get('/companyDetails/:companyId',users.authenticate,company.getCompanyDetails); 
     router.post("/editCompany/:companyId",users.authenticate, company.editCompany); // add autheticate middleware based on roles 
     // router.get('/:id/getUserCompany/:companyId',company.getUserCompany); // add autheticate middleware based on roles
   

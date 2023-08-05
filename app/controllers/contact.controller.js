@@ -85,7 +85,7 @@ exports.getUserContacts = async (req, res,next) => {
 exports.getContactDetails = async (req, res,next) => {
   try {
     let contacts;
-    const user_id = parseInt(req.params.id)
+    const user_id = parseInt(req.user.id)
     const contact_id = parseInt(req.params.contactId)
     
     contacts = await contact.findOne({
