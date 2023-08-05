@@ -1,29 +1,24 @@
 
-// module.exports = app => {
-//     const contact = require("../controllers/contact.controller.js");
-  
-//     var router = require("express").Router();
+module.exports = app => {
+    const contact = require("../controllers/contact.controller.js");
+    const users = require("../controllers/user.controller.js");
+    var router = require("express").Router();
 
-//     // router.post("/addContact", contact.addContact);
 
-//     // router.post('/login' , users.login);
-  
-//     // router.get('/userhome',users.userhome);
+    // user contacts routes 
+    router.post("/addContact", users.authenticate,contact.addContact);
 
-//     // // Retrieve all published Tutorials
-//     // router.get("/published", tutorials.findAllPublished);
+    router.get('/getUserContacts',users.authenticate,contact.getUserContacts); /// TOPP 
+    router.get('/getUserContacts/:contactId',users.authenticate,contact.getContactDetails);
+
+    router.put("/editContact/:contactId", users.authenticate,contact.editContact);
+    // get one contact 
   
-//     // // Retrieve a single Tutorial with id
-//     // router.get("/:id", tutorials.findOne);
+    // // Delete a Tutorial with id
+    // router.delete("/:id", tutorials.delete);
   
-//     // // Update a Tutorial with id
-//     // router.put("/:id", tutorials.update);
+    // // Delete all Tutorials
+    // router.delete("/", tutorials.deleteAll);
   
-//     // // Delete a Tutorial with id
-//     // router.delete("/:id", tutorials.delete);
-  
-//     // // Delete all Tutorials
-//     // router.delete("/", tutorials.deleteAll);
-  
-//     app.use("/api/contact", router);
-//   };
+    app.use("/api/contact", router);
+  };

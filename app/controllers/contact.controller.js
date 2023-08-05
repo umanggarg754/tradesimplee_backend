@@ -5,6 +5,7 @@ const Op = db.Sequelize.Op;
 
 
 exports.addContact = async(req, res,next) => {
+    user_id = parseInt(req.user.id);
     //res.status(201).json(req.body);
     //add new user and return 201
     var contact_instance = {
@@ -14,7 +15,7 @@ exports.addContact = async(req, res,next) => {
       email: req.body.email,
       linkedin: req.body.linkedin,
       background: req.body.background,
-      user_id: parseInt(req.params.id), // note path parameter 
+      user_id: user_id, // note path parameter 
       status: req.body.status,
       city: req.body.city,
       country: req.body.country,
@@ -28,7 +29,7 @@ exports.addContact = async(req, res,next) => {
 exports.editContact = async(req, res,next) => {
     //res.status(201).json(req.body);
     //add new user and return 201
-
+    user_id = parseInt(req.user.id);
     var contact_instance = {
         name : req.body.name,
         company : req.body.company,
@@ -36,7 +37,7 @@ exports.editContact = async(req, res,next) => {
         email: req.body.email,
         linkedin: req.body.linkedin,
         background: req.body.background,
-        user_id: parseInt(req.params.id),
+        user_id: user_id,
         status: req.body.status,
         city: req.body.city,
         country: req.body.country,
@@ -51,15 +52,14 @@ exports.editContact = async(req, res,next) => {
 // understand importance of next() in middleware
 exports.getUserContacts = async (req, res,next) => {
 
-  const authenticatedUserId = req.user.id;
-  const user_id = parseInt(req.params.id);
+  const user_id = req.user.id;
 
-  console.log(user_id,authenticatedUserId)
-  if (user_id !== authenticatedUserId) {
-    // User is trying to access another user's data.
-    // Perform logout here, e.g., delete or invalidate the token.
-    return res.sendStatus(401); // Unauthorized
-  }
+  // console.log(user_id,authenticatedUserId)
+  // if (user_id !== authenticatedUserId) {
+  //   // User is trying to access another user's data.
+  //   // Perform logout here, e.g., delete or invalidate the token.
+  //   return res.sendStatus(401); // Unauthorized
+  // }
 
   try {
     let contacts;

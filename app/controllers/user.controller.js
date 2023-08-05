@@ -65,6 +65,7 @@ exports.login = async(req,res,next)=>{
 
 exports.authenticate = async(req, res, next)=>{
       // const token = req.header('Authorization');
+      try {
       let token = req.headers['authorization'].split(" ")[1];
       if (!token) return res.sendStatus(401); // Unauthorized
     
@@ -74,6 +75,10 @@ exports.authenticate = async(req, res, next)=>{
         console.log(user);
         next();
       });
+      } catch (err) {
+        console.error(err);
+        return res.sendStatus(500);
+      };
     };
 
 

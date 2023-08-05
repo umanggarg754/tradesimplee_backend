@@ -1,12 +1,50 @@
 
-// module.exports = app => {
-//     const order = require("../controllers/order.controller.js");
-  
-//     var router = require("express").Router();
+module.exports = app => {
+    const order = require("../controllers/order.controller.js");
+    const users = require("../controllers/user.controller.js");
+    var router = require("express").Router();
 
-//     router.post("/createOrder", order.createOrder); // add autheticate middleware based on roles 
+    const multer = require('multer');
+    const uuidv4 = require('uuidv4');
+    const DIR = '../assets/';
 
-//     router.post("/editOrder", order.editOrder); // add autheticate middleware based on roles 
+    
+    // for file upload 
+    // <!DOCTYPE html>
+    // <form action="/upload" method="POST" enctype="multipart/form-data">
+    //     <input type="file" name="image" />
+    //     <button type="submit">Upload</button>
+    // </form>
 
-//     app.use("/api/order", router);
-//   };
+    const storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, DIR);
+        },
+        filename: (req, file, cb) => {
+            const fileName = file.originalname.toLowerCase().split(' ').join('-');
+            cb(null, uuidv4() + '-' + fileName)
+        }
+    });
+
+    var upload = multer({
+        storage: storage,
+        fileFilter: (req, file, cb) => {
+            if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
+                cb(null, true);
+            } else {
+                cb(null, false);
+                return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+            }
+        }
+    });
+
+
+
+    // user order routes  
+    //router.post("/:id/createOrder", order.createOrder); // add autheticate middleware based on roles  TODO 
+    router.post('/createOrder',  users.authenticate,upload.array('products[*].photo',10),  order.createOrder); // u upload.fields([{ name: 'photo', maxCount: 10 }]) ,
+    router.post("/editOrder/:orderId", users.authenticate,order.editOrder); // add autheticate middleware based on roles TODO
+    router.get('/getUserOrders',users.authenticate,order.getUserOrders); 
+
+    app.use("/api/order", router);
+  };
