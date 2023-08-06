@@ -4,10 +4,17 @@ const product = db.product;
 const Op = db.Sequelize.Op;
 
 
+
+  
+
+
+
 exports.createOrder = async(req, res,next) => {
+    user_id = parseInt(req.user.id)
+    console.log(req.body);
       try {
         var order_instance = {
-            user_id : parseInt(req.params.id), // note path param 
+            user_id : user_id, // note path param 
             contact_id : req.body.contact_id,
             status : req.body.status,
             summary: req.body.summary,
@@ -42,7 +49,6 @@ exports.createOrder = async(req, res,next) => {
             // ADD photo of each order to the upload folder
             // get name of the photo file 
             // Add order_id  and imaeg path to each product
-                 
             
             // image = product_instance.photo;
             // image.name =  product_create.id + product_instance.serial_num + ".jpg"; // deal with other file extensions

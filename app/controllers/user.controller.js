@@ -39,7 +39,13 @@ exports.createUser = async(req, res,next) => {
     summary: req.body.summary
   };
   created_user = await user.create(usr);
-  res.status(201).json(created_user);
+  if (created_user.id){
+      token = jwt.sign({ "id" : created_user.id,"email" : created_user.email,"first_name":created_user.first_name },process.env.SECRET); // userId: user.id 
+      res.status(200).json({ token : token });
+  }
+  else{
+    res.status(400).json({ error : "User was not created" });
+  }
 };
 
 exports.login = async(req,res,next)=>{
