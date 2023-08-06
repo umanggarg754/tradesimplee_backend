@@ -42,8 +42,8 @@ module.exports = app => {
 
     // user order routes  
     //router.post("/:id/createOrder", order.createOrder); // add autheticate middleware based on roles  TODO 
-    router.post('/createOrder',  users.authenticate,  order.createOrder); // u upload.fields([{ name: 'photo', maxCount: 10 }]) , // upload.array('products[*].photo')
-    router.post("/editOrder/:orderId", users.authenticate,order.editOrder); // add autheticate middleware based on roles TODO
+    router.post('/createOrder',users.authenticate, upload.none() ,   order.createOrder); // u upload.fields([{ name: 'photo', maxCount: 10 }]) , // upload.array('products[*].photo')
+    router.post("/editOrder/:orderId", users.authenticate, upload.none() ,order.editOrder); // add autheticate middleware based on roles TODO
     router.get('/getUserOrders',users.authenticate,order.getUserOrders); 
 
     app.use("/api/order", router);

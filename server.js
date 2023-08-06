@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const app = express();
 const jwt = require('jsonwebtoken');
 const fileUpload = require('express-fileupload');
+const bodyParser = require('body-parser');
 dotenv.config();
 
 var corsOptions = {
@@ -17,7 +18,8 @@ app.use(cors());
 app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));  // 
+//app.use(bodyParser.urlencoded({ extended: true }));
 //app.use(fileUpload());
 // app.use('/public', express.static('public'));
 

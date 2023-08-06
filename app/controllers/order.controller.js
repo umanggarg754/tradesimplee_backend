@@ -26,7 +26,10 @@ exports.createOrder = async(req, res,next) => {
             currency: req.body.currency
             };
         created_order = await order.create(order_instance);  
-  
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: 'Error inserting the order.' });
+        }
         // Save the products associated with the order
         var products = [];
         const order_id = created_order.id; 
@@ -44,8 +47,9 @@ exports.createOrder = async(req, res,next) => {
             }
         }
 
-
+        try { 
         for (const product_instance of products) {
+            console.log(product_instance);
             // ADD photo of each order to the upload folder
             // get name of the photo file 
             // Add order_id  and imaeg path to each product
@@ -54,14 +58,17 @@ exports.createOrder = async(req, res,next) => {
             // image.name =  product_create.id + product_instance.serial_num + ".jpg"; // deal with other file extensions
             // if (/^image/.test(image.mimetype)) return res.sendStatus(400);
             // image.mv(__dirname + '/upload/' + image.name);
-            product_instance.photo = product_instance.photo ? product.photo.map((file) => file.path) : [];
+            //product_instance.photo = product_instance.photo ? product.photo.map((file) => file.path) : [];
+            //product_instance.photo = product_instance.photo ? product_instance.photo.map((file) => file.path) : [];
+            product_instance.photo = null
             product_instance.order_id = order_id;
             product_create = await product.create(product_instance);
         }
 
         res.status(201).json(created_order);
       } catch (err) {
-        res.status(500).json({ message: 'Error inserting the order and products.' });
+        console.log(err);
+        res.status(500).json({ message: 'Error inserting  products for order' });
       }
     };
 
