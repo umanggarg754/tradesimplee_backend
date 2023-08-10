@@ -46,5 +46,8 @@ module.exports = app => {
     router.post("/editOrder/:orderId", users.authenticate, upload.none() ,order.editOrder); // add autheticate middleware based on roles TODO
     router.get('/getUserOrders',users.authenticate,order.getUserOrders); 
 
+    router.get('/getOrder/:orderId',users.authenticate,order.getOrder);
+    router.get('/createPerforma/:orderId',users.authenticate,order.createPerformaInvoiceOrder);
+
     app.use("/api/order", router);
   };
