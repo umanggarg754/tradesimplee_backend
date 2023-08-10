@@ -12,18 +12,23 @@ const Op = db.Sequelize.Op;
 exports.createOrder = async(req, res,next) => {
     user_id = parseInt(req.user.id)
     console.log(req.body);
+
+    if (!req.body.summary){
+            req.body.summary = "";
+    }
+
       try {
         var order_instance = {
-            user_id : user_id, // note path param 
-            contact_id : req.body.contact_id,
-            status : req.body.status,
-            summary: req.body.summary,
-            invoice_number: req.body.invoice_number,
-            order_number: req.body.order_number,
-            date: req.body.date,
-            customer_notes: req.body.customer_notes,
-            terms_and_conditions: req.body.terms_and_conditions,
-            currency: req.body.currency
+            user_id : user_id, // 
+            contact_id : req.body.contact_id, //
+            status : req.body.status, //
+            summary: req.body.summary,  //
+            invoice_number: req.body.invoice_number, //
+            order_number: req.body.order_number, //
+            date: req.body.date, //
+            customer_notes: req.body.customer_notes, //
+            terms_and_conditions: req.body.terms_and_conditions, //
+            currency: req.body.currency //
             };
         created_order = await order.create(order_instance);  
         } catch (err) {
@@ -50,18 +55,30 @@ exports.createOrder = async(req, res,next) => {
         try { 
         for (const product_instance of products) {
             console.log(product_instance);
-            // ADD photo of each order to the upload folder
-            // get name of the photo file 
-            // Add order_id  and imaeg path to each product
+
+            product_instance.order_id = order_id;
+            // sno product_name price quantity status photo other_details 
+
+            if (!product_instance.price){
+                product_instance.price = null;
+            }
+
+            fixed_keys = ['serial_num', 'product_name', 'price', 'quantity', 'status', 'photo','order_id']
             
-            // image = product_instance.photo;
-            // image.name =  product_create.id + product_instance.serial_num + ".jpg"; // deal with other file extensions
-            // if (/^image/.test(image.mimetype)) return res.sendStatus(400);
-            // image.mv(__dirname + '/upload/' + image.name);
+            var other_details = {}
+            var keys = Object.keys(product);
+            for (const key of keys) {
+                if (!fixed_keys.includes(key)){
+                    other_details[key] = product_instance[key];
+                }
+            }
+            product_instance.other_details = other_details;
+            
             //product_instance.photo = product_instance.photo ? product.photo.map((file) => file.path) : [];
             //product_instance.photo = product_instance.photo ? product_instance.photo.map((file) => file.path) : [];
-            product_instance.photo = null
-            product_instance.order_id = order_id;
+            product_instance.photo = null;
+            console.log(product_instance);
+
             product_create = await product.create(product_instance);
         }
 
