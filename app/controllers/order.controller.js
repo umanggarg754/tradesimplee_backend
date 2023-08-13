@@ -75,9 +75,9 @@ exports.createOrder = async(req, res,next) => {
             //console.log(other_details);
             product_instance.other_details = other_details;
             
-            //product_instance.photo = product_instance.photo ? product.photo.map((file) => file.path) : [];
+            product_instance.photo = product_instance.photo ? product_instance.photo.map((file) => file.path) : [];
             //product_instance.photo = product_instance.photo ? product_instance.photo.map((file) => file.path) : [];
-            product_instance.photo = null;
+            // product_instance.photo = null;
             console.log(product_instance);
 
             product_create = await product.create(product_instance);
