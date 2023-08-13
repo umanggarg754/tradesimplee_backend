@@ -21,7 +21,8 @@ exports.createOrder = async(req, res,next) => {
             summary: req.body.summary,  //
             invoice_number: req.body.invoice_number, //
             order_number: req.body.order_number, //
-            date: req.body.date, //
+            // date: req.body.date, //
+            date: new Date(req.body.date), //
             customer_notes: req.body.customer_notes, //
             terms_and_conditions: req.body.terms_and_conditions, //
             currency: req.body.currency //
@@ -355,6 +356,10 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
         if (performa_invoice_order === null ) {
             return res.status(404).json({ msg: 'Performa Invoice order not created' });
         }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal Sever Error.' });
     }
 
 
