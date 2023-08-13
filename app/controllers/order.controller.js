@@ -75,13 +75,19 @@ exports.createOrder = async(req, res,next) => {
             }
             //console.log(other_details);
             product_instance.other_details = other_details;
-            
-            product_instance.photo = product_instance.photo ? product_instance.photo.map((file) => file.path) : [];
+
+
+            paths = product_instance.photo.map((file) => file.path);            
+            product_instance.photo = product_instance.photo ? paths[0] : '';
             //product_instance.photo = product_instance.photo ? product_instance.photo.map((file) => file.path) : [];
             // product_instance.photo = null;
             console.log(product_instance);
-
-            product_create = await product.create(product_instance);
+            try{
+                product_create = await product.create(product_instance);
+            } catch (err) {
+                console.log(err);
+                res.status(500).json({ message: 'Error inserting the product.' });
+            }
         }
 
         res.status(201).json(created_order);
@@ -322,7 +328,7 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
         performa_invoice_order = await performa_invoice.create({
             user_id: parseInt(user_id),
             order_id: parseInt(order_id),
-            company_name: company_details.company_name,
+            company_name: company_details.company_name, 
             company_address: company_details.company_address,
             company_city: company_details.company_city,
             company_state: company_details.company_state,
