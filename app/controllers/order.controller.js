@@ -327,58 +327,24 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
     }
 
     // get bank details of user
+    bank_details = ''
 
     // create performa invoice order
     try {
-        performa_invoice_order = await performa_invoice.create({
-            user_id: parseInt(user_id),
-            order_id: parseInt(order_id),
-            company_name: company_details.company_name, 
-            company_address: company_details.company_address,
-            company_city: company_details.company_city,
-            company_state: company_details.company_state,
-            company_country: company_details.company_country,
-            company_pincode: company_details.company_pincode,
-            company_gst: company_details.company_gst,
-            company_pan: company_details.company_pan,
-            company_phone: company_details.company_phone,
-            company_email: company_details.company_email,
-            company_website: company_details.company_website,
-            company_bank_name: company_details.company_bank_name,
-            company_bank_account_number: company_details.company_bank_account_number,
-            company_bank_ifsc_code: company_details.company_bank_ifsc_code,
-            company_bank_branch: company_details.company_bank_branch,
-            company_bank_address: company_details.company_bank_address,
-            company_bank_city: company_details.company_bank_city,
-            company_bank_state: company_details.company_bank_state,
-            company_bank_country: company_details.company_bank_country,
-            company_bank_pincode: company_details.company_bank_pincode,
-            contact_name: contact_details.contact_name,
-            contact_address: contact_details.contact_address,
-            contact_city: contact_details.contact_city,
-            contact_state: contact_details.contact_state,
-            contact_country: contact_details.contact_country,
-            contact_pincode: contact_details.contact_pincode,
-            contact_gst: contact_details.contact_gst,
-            contact_pan: contact_details.contact_pan,
-            contact_phone: contact_details.contact_phone,
-            contact_email: contact_details.contact_email,
-            contact_website: contact_details.contact_website,
+        const performa_invoice_order = {
+            company_details: company_details,
+            order_details: order_details,
+            contact_details: contact_details,
+            product_details: product_details,
             total_amount: total_amount,
             total_amount_in_words: total_amount_in_words,
-            currency: order_details.currency,
-            status: "pending",
-        });
-        if (performa_invoice_order === null ) {
-            return res.status(404).json({ msg: 'Performa Invoice order not created' });
-        }
+            bank_details: bank_details
+        };
+        res.status(200).json(performa_invoice_order);
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ error: 'Internal Sever Error.' });
+        res.status(500).json({ error: 'Could not create performa invoice order.' });
     }
 
-
-
-            
 };
