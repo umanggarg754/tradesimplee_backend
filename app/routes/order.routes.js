@@ -3,10 +3,10 @@ module.exports = app => {
     const order = require("../controllers/order.controller.js");
     const users = require("../controllers/user.controller.js");
     var router = require("express").Router();
-
+    let fs = require('fs-extra');
     const multer = require('multer');
     const { v4: uuidv4 } = require('uuid');
-    const DIR = '../assets/';
+    const DIR = 'assets/';
 
     
     // for file upload 
@@ -18,6 +18,7 @@ module.exports = app => {
 
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
+            fs.mkdirsSync(DIR);
             cb(null, DIR);
         },
         filename: (req, file, cb) => {

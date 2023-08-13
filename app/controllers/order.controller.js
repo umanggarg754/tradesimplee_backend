@@ -50,6 +50,9 @@ exports.createOrder = async(req, res,next) => {
             }
         }
 
+        // console.log(req.files);
+            
+        index = 0 
         try { 
         for (const product_instance of products) {
             console.log(product_instance);
@@ -76,14 +79,16 @@ exports.createOrder = async(req, res,next) => {
             //console.log(other_details);
             product_instance.other_details = other_details;
 
-
-            paths = product_instance.photo.map((file) => file.path);            
-            product_instance.photo = product_instance.photo ? paths[0] : '';
+            //console.log(product_instance.photo);
+            //paths = product_instance.photo.map((file) => file.path);   
+            console.log(req.files[index]);
+            product_instance.photo = req.files[index] ? req.files[index].filename : '';
             //product_instance.photo = product_instance.photo ? product_instance.photo.map((file) => file.path) : [];
             // product_instance.photo = null;
             console.log(product_instance);
             try{
                 product_create = await product.create(product_instance);
+                index += 1;
             } catch (err) {
                 console.log(err);
                 res.status(500).json({ message: 'Error inserting the product.' });
