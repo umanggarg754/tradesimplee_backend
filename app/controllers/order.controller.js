@@ -8,7 +8,7 @@ const { ToWords } = require('to-words');
 exports.createOrder = async(req, res,next) => {
     user_id = parseInt(req.user.id)
     console.log(req.body);
-    console.log(req.body.products.photo,"pic")
+    console.log(req.body.products[0],"pic")
 
     if (!req.body.summary){
             req.body.summary = "";
