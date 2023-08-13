@@ -28,7 +28,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING
       },
       other_details: {
-        type: Sequelize.JSON
+        type: Sequelize.JSONB
       },
     },{
       timestamps: true,

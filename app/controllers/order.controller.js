@@ -52,7 +52,6 @@ exports.createOrder = async(req, res,next) => {
         try { 
         for (const product_instance of products) {
             console.log(product_instance);
-
             product_instance.order_id = order_id;
             // sno product_name price quantity status photo other_details 
 
@@ -60,15 +59,20 @@ exports.createOrder = async(req, res,next) => {
                 product_instance.price = null;
             }
 
+            if (!product_instance.status){
+                product_instance.status = null;
+            }
+
             fixed_keys = ['serial_num', 'product_name', 'price', 'quantity', 'status', 'photo','order_id']
             
             var other_details = {}
-            var keys = Object.keys(product);
+            var keys = Object.keys(product_instance);
             for (const key of keys) {
                 if (!fixed_keys.includes(key)){
                     other_details[key] = product_instance[key];
                 }
             }
+            //console.log(other_details);
             product_instance.other_details = other_details;
             
             //product_instance.photo = product_instance.photo ? product.photo.map((file) => file.path) : [];
