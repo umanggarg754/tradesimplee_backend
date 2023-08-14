@@ -187,7 +187,8 @@ exports.editOrder = async(req, res,next) => {
 // get order details for user
 exports.getOrder = async (req, res,next) => {
     const user_id = req.user.id;
-    const order_id = req.params.id;
+    const order_id = parseInt(req.params.id);
+
     try {
         let order_instance;
         if (req.query.status) {
@@ -225,14 +226,18 @@ exports.getOrder = async (req, res,next) => {
 // contact details and order and product details of a particular order and bank details 
 // also add total amount and total amount in words uing total amount key in prodcuts
 exports.createPerformaInvoiceOrder = async(req, res,next) => {
-    const user_id = req.user.id;
-    const order_id = req.params.id;
+    const user_id = parseInt(req.user.id);
+    const order_id = parseInt(req.params.orderId);
     
     // get company details of user 
     try {
-        company_details = await company.findOne({
-            where: { user_id: parseInt(user_id) },
+        company = await db.user_company.findOne({
+            where: { user_id: user_id},
         });
+        company_details = await db.company.findOne({ 
+            where: { id: company.company_id },
+        });
+
         if (company_details === null ) {
             return res.status(404).json({ msg: 'Company details not found' });
         }
@@ -243,9 +248,10 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
 
 
     // get order details of user
+    console.log(user_id,order_id)
     try {
         order_details = await order.findOne({
-            where: { user_id: parseInt(user_id), id: order_id },
+            where: { user_id: user_id, id: order_id },
         });
         if (order_details === null ) {
             return res.status(404).json({ msg: 'Order details not found' });
@@ -258,8 +264,8 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
 
     // get contact details of user based on order.contact_id
     try {
-        contact_details = await contact.findOne({
-            where: { user_id: parseInt(user_id), id: order_details.contact_id },
+        contact_details = await db.contact.findOne({
+            where: { user_id: user_id, id: order_details.contact_id },
         });
         if (contact_details === null ) {
             return res.status(404).json({ msg: 'Contact details not found' });
@@ -277,7 +283,7 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
     // NOS"	SR. NO	DESCRIPTION					PACKING	BOX	SQM	PRICE PER SQM	TOTAL AMOUNT
     try {
         product_details = await product.findAll({
-            where: { user_id: parseInt(user_id), order_id: order_id },
+            where: { order_id: order_id },
             attributes: fields_for_proforma, 
         });
         if (product_details === null ) {
