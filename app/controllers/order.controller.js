@@ -271,12 +271,32 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
     }
 
     // get prouct details of order 
+    fields_for_proforma = ['id', 'serial_num', 'product_name', 'other_details']
+    extract_from_other_details = ['marksandnums','packing','box','sqm','pricepersqm','totalamount']
+    // "MARKS &
+    // NOS"	SR. NO	DESCRIPTION					PACKING	BOX	SQM	PRICE PER SQM	TOTAL AMOUNT
     try {
         product_details = await product.findAll({
             where: { user_id: parseInt(user_id), order_id: order_id },
+            attributes: fields_for_proforma, 
         });
         if (product_details === null ) {
             return res.status(404).json({ msg: 'Product details not found' });
+        }else{
+            for (const product_instance of product_details) {
+                try{
+                other_details = product_instance.other_details;
+                product_instance.marksandnums = other_details.marksandnums;
+                product_instance.packing = other_details.packing;
+                product_instance.box = other_details.box;
+                product_instance.sqm = other_details.sqm;
+                product_instance.pricepersqm = other_details.pricepersqm;
+                product_instance.totalamount = other_details.totalamount;
+                delete product_instance.other_details;
+                }catch (error) {
+                    console.log(error);
+                }
+            }
         }
     }
     catch (error) {
@@ -288,7 +308,7 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
     try {
         total_amount = 0;
         for (const product_instance of product_details) {
-            total_amount += product_instance.total_amount;
+            total_amount += product_instance.totalamount;
         }
 
         let localeCode = 'en-IN';
