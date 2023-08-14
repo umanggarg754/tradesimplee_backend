@@ -344,8 +344,12 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
             localeCode = 'en-IN';
         }
 
-        const toWords = new ToWords({localeCode: localeCode, converterOptions: {currency: true}});
-        total_amount_in_words = toWords.convert(total_amount, { currency: true });
+        if (total_amount){
+            const toWords = new ToWords({localeCode: localeCode, converterOptions: {currency: true}});
+            total_amount_in_words = toWords.convert(total_amount, { currency: true });
+        }else{
+            total_amount_in_words = '';
+        }
     }
     catch (error) {
         console.log(error);
