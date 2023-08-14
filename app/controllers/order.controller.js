@@ -285,6 +285,7 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
         product_details = await product.findAll({
             where: { order_id: order_id },
             attributes: fields_for_proforma, 
+            raw: true,
         });
         if (product_details === null ) {
             return res.status(404).json({ msg: 'Product details not found' });
