@@ -357,7 +357,6 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
     }
 
     // get bank details of user
-    bank_details = ''
 
     // create performa invoice order
     try {
@@ -368,7 +367,6 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
             product_details: product_details,
             total_amount: total_amount,
             total_amount_in_words: total_amount_in_words,
-            bank_details: bank_details
         };
         res.status(200).json(performa_invoice_order);
     }

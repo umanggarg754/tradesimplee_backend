@@ -16,6 +16,7 @@ exports.createCompany = async(req, res,next) => {
       pan: req.body.pan,
       address: req.body.address,
       city: req.body.city,
+      bank_details: req.body.bank_details
     };
     created_company = await company.create(company_instance);
     // user_id add mapping to table 
@@ -35,7 +36,9 @@ exports.editCompany = async(req, res,next) => {
     gst_numberl : req.body.gst_number,
     pan: req.body.pan,
     address: req.body.address,
-    city: req.body.city};
+    city: req.body.city,
+    bank_details: req.body.bank_details
+  };
     updated_company = await company.update(company_instance,{where:{id:parseInt(req.params.companyId)}}); // wrong paramter for update 
     res.status(201).json(updated_company);
   };
