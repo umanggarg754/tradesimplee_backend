@@ -181,11 +181,12 @@ exports.editOrder = async(req, res,next) => {
         let order_instance;
         if (req.query.status) {
             order_instance = await order.findAll({
-            where: { user_id: parseInt(user_id), status: req.query.status },
+            where: { user_id: user_id, status: req.query.status },
         })
         } else {
             order_instance = await order.findAll({
-            where: { user_id: parseInt(user_id) },
+            where: { user_id: user_id},
+            raw: true,
         });
         }
 
@@ -202,31 +203,29 @@ exports.editOrder = async(req, res,next) => {
 
 // get order details for user
 exports.getOrder = async (req, res,next) => {
-    const user_id = req.user.id;
+    const user_id = parseInt(req.user.id);
     const order_id = parseInt(req.params.id);
 
     try {
         let order_instance;
-        if (req.query.status) {
-            order_instance = await order.findOne({
-            where: { user_id: parseInt(user_id), id: order_id, status: req.query.status },
-        })
-        } else {
-            order_instance = await order.findOne({
+        order_instance = await order.findOne({
             where: { user_id: parseInt(user_id), id: order_id },
         });
-        }
+        
 
         if (order_instance === null ) {
           return res.status(404).json({ msg: 'Order not found' });
         }
-
 
         // Get the products associated with the order
         const products = await product.findAll({
         where: { order_id: order_id },
         });
 
+        if (products === null ) {
+            console.log("No products found for the order");
+        }
+        
         order_instance.products = products;
 
         res.status(200).json(order_instance);
