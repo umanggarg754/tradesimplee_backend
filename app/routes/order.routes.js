@@ -50,6 +50,7 @@ module.exports = app => {
     router.get('/getOrder/:orderId',users.authenticate,order.getOrder);
 
     router.get('/createPerforma/:orderId',users.authenticate,order.createPerformaInvoiceOrder);
+    router.get('/createDesignList/:orderId',users.authenticate,order.createDesignList);
 
     app.use("/api/order", router);
   };

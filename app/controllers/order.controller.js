@@ -392,3 +392,93 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
     }
 
 };
+
+
+
+
+exports.createDesignList = async(req, res,next) => {
+    const user_id = parseInt(req.user.id);
+    const order_id = parseInt(req.params.orderId);
+    
+    // get company details of user 
+    try {
+        company = await db.user_company.findOne({
+            where: { user_id: user_id},
+        });
+        company_details = await db.company.findOne({ 
+            where: { id: company.company_id },
+        });
+
+        if (company_details === null ) {
+            return res.status(404).json({ msg: 'Company details not found' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Could not get company details.' });
+    }
+
+
+    // get order details of user
+    console.log(user_id,order_id)
+    try {
+        order_details = await order.findOne({
+            where: { user_id: user_id, id: order_id },
+        });
+        if (order_details === null ) {
+            return res.status(404).json({ msg: 'Order details not found' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Could not get order details.' });
+    }
+
+
+    
+    // get prouct details of order 
+    fields_for_proforma = ['id', 'serial_num', 'product_name', 'other_details','photo']
+    extract_from_other_details = ['marksandnums','packing','box','sqm','pricepersqm','totalamount']
+    // CONTAINER	PALLETS	BOXES	PCS PER BOX	BRAND	SQM	GROSS WEIGHT							
+    try {
+        product_details = await product.findAll({
+            where: { order_id: order_id },
+            attributes: fields_for_proforma, 
+            raw: true,
+        });
+        if (product_details === null ) {
+            return res.status(404).json({ msg: 'Product details not found' });
+        }else{
+            for (const product_instance of product_details) {
+                try{
+                other_details = product_instance.other_details;
+                product_instance.container = other_details.container;
+                product_instance.palletbboxes = other_details.palletbboxes;
+                product_instance.pcsperbox = other_details.pcsperbox;
+                product_instance.sqm = other_details.sqm;
+                product_instance.brand = other_details.brand;
+                product_instance.grossweight = other_details.grossweight;
+                delete product_instance.other_details;
+                }catch (error) {
+                    console.log(error);
+                }
+            }
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Could not get product details.' });
+    }
+    
+    try {
+        const design_list = {
+            company_details: company_details,
+            order_details: order_details,
+            product_details: product_details
+        };
+        res.status(200).json(design_list);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Could not create performa invoice order.' });
+    }
+
+};
