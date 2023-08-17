@@ -5,6 +5,19 @@ const Op = db.Sequelize.Op;
 const { ToWords } = require('to-words');
 
 
+
+function trasform_to_other_details(product_instance){
+    fixed_keys = ['serial_num', 'product_name', 'price', 'quantity', 'status', 'photo','order_id']
+    var other_details = {}
+    var keys = Object.keys(product_instance);
+    for (const key of keys) {
+        if (!fixed_keys.includes(key)){
+            other_details[key] = product_instance[key];
+        }
+    }
+    return other_details;
+};
+
 exports.createOrder = async(req, res,next) => {
     user_id = parseInt(req.user.id)
     console.log(req.body);
@@ -17,7 +30,7 @@ exports.createOrder = async(req, res,next) => {
       try {
         var order_instance = {
             user_id : user_id, // 
-            contact_id : req.body.contact_id, //
+            contact_id : parseInt(req.body.contact_id), //
             status : req.body.status, //
             summary: req.body.summary,  //
             invoice_number: req.body.invoice_number, //
@@ -67,17 +80,8 @@ exports.createOrder = async(req, res,next) => {
                 product_instance.status = null;
             }
 
-            fixed_keys = ['serial_num', 'product_name', 'price', 'quantity', 'status', 'photo','order_id']
-            
-            var other_details = {}
-            var keys = Object.keys(product_instance);
-            for (const key of keys) {
-                if (!fixed_keys.includes(key)){
-                    other_details[key] = product_instance[key];
-                }
-            }
             //console.log(other_details);
-            product_instance.other_details = other_details;
+            product_instance.other_details =  trasform_to_other_details(product_instance);
 
             //console.log(product_instance.photo);
             //paths = product_instance.photo.map((file) => file.path);   
@@ -106,38 +110,46 @@ exports.createOrder = async(req, res,next) => {
 
 // TODO edit order 
 exports.editOrder = async(req, res,next) => {
-    //res.status(201).json(req.body);
-    //add new user and return 201
+
+    user_id = parseInt(req.user.id)
+    const order_id = parseInt(req.body.id); 
+
     try {
         var order_instance = {
-        user_id : parseInt(req.params.id),
-        contact_id : req.body.contact_id,
-        status : req.body.status,
-        summary: req.body.summary,
-        invoice_number: req.body.invoice_number,
-        order_number: req.body.order_number,
-        date: req.body.date,
-        customer_notes: req.body.customer_notes,
-        terms_and_conditions: req.body.terms_and_conditions,
-        currency: req.body.currency
-        };
-        created_order = await order.update(order_instance,{where:{id:req.order_id}});
+            user_id : user_id, // 
+            contact_id : parseInt(req.body.contact_id), //
+            status : req.body.status, //
+            summary: req.body.summary,  //
+            invoice_number: req.body.invoice_number, //
+            order_number: req.body.order_number, //
+            // date: req.body.date, //
+            date: new Date(req.body.date), //
+            customer_notes: req.body.customer_notes, //
+            terms_and_conditions: req.body.terms_and_conditions, //
+            currency: req.body.currency //
+            };
+        created_order = await order.update(order_instance,{where:{id:order_id}});
+    } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: 'Error inserting the order.' });
+    }
         
-        var products = [];
-        const order_id = req.body.id; 
-        // get list of orders from the database + add new order to the list
-        if (!order_id ) {
-            console.log("Order was not created");
+        
+    var products = [];
+    
+    // get list of orders from the database + add new order to the list
+    if (!created_order ) {
+        console.log("Order not updated");
+    }
+    else{
+        // console.log("Order was created");
+        if (req.body.products) {
+            products = req.body.products;
         }
         else{
-            // console.log("Order was created");
-            if (req.body.products) {
-                products = req.body.products;
-            }
-            else{
-                console.log("No products were added to the order");
-            }
+            console.log("No products were added to the order");
         }
+    }
         
         // Add products to the separate table and associate them with the order_id
         for (const product_instance of products) {

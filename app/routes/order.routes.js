@@ -44,10 +44,11 @@ module.exports = app => {
     // user order routes  
     //router.post("/:id/createOrder", order.createOrder); // add autheticate middleware based on roles  TODO 
     router.post('/createOrder',users.authenticate, upload.any() ,   order.createOrder); // u upload.fields([{ name: 'photo', maxCount: 10 }]) , // upload.array('products[*].photo')
-    router.post("/editOrder/:orderId", users.authenticate, upload.none() ,order.editOrder); // add autheticate middleware based on roles TODO
+    router.put("/editOrder/:orderId", users.authenticate, upload.any() ,order.editOrder); // add autheticate middleware based on roles TODO
+    
     router.get('/getUserOrders',users.authenticate,order.getUserOrders); 
-
     router.get('/getOrder/:orderId',users.authenticate,order.getOrder);
+
     router.get('/createPerforma/:orderId',users.authenticate,order.createPerformaInvoiceOrder);
 
     app.use("/api/order", router);
