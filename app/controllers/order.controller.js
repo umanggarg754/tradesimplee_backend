@@ -44,7 +44,7 @@ exports.createOrder = async(req, res,next) => {
         created_order = await order.create(order_instance);  
         } catch (err) {
             console.log(err);
-            res.status(500).json({ message: 'Error inserting the order.' });
+            res.status(500).json({ message: 'Error creating the order.' });
         }
         // Save the products associated with the order
         var products = [];
@@ -112,7 +112,9 @@ exports.createOrder = async(req, res,next) => {
 exports.editOrder = async(req, res,next) => {
 
     user_id = parseInt(req.user.id)
-    const order_id = parseInt(req.body.id); 
+    const order_id = parseInt(req.params.orderId); 
+
+    console.log(req.body);
 
     try {
         var order_instance = {
@@ -165,7 +167,7 @@ exports.editOrder = async(req, res,next) => {
         res.status(201).json(created_order);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: 'Could not create order.' });
+        res.status(500).json({ error: 'Could not update order.' });
     }
   };
 
@@ -173,7 +175,7 @@ exports.editOrder = async(req, res,next) => {
   exports.getUserOrders = async (req, res,next) => {
 
 
-    const user_id = req.user.id;
+    const user_id = parseInt(req.user.id);
 
     try {
         let order_instance;
