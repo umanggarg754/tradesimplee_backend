@@ -150,14 +150,16 @@ exports.editOrder = async(req, res,next) => {
             console.log("No products were added to the order");
         }
     }
-        
+    
+
+    index = 0 
+    try{ 
         // Add products to the separate table and associate them with the order_id
         for (const product_instance of products) {
-        // Add order_id to each product
         product_instance.order_id = order_id;
-        // Create the product entry in the Product table
-
-        await product.update(product_instance,{where:{order_id:product_instance.order_id,serial_num:product_instance.serial_num}});
+        product_instance.other_details =  trasform_to_other_details(product_instance);
+        product_instance.photo = req.files[index] ? req.files[index].filename : '';
+        updated = await product.update(product_instance,{where:{order_id:order_id,serial_num:product_instance.serial_num}});
         }
 
         res.status(201).json(created_order);
