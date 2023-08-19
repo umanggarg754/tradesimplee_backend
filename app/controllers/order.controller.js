@@ -172,7 +172,7 @@ exports.editOrder = async(req, res,next) => {
   };
 
 // get order details for user 
-  exports.getUserOrders = async (req, res,next) => {
+exports.getUserOrders = async (req, res,next) => {
 
 
     const user_id = parseInt(req.user.id);
@@ -180,19 +180,20 @@ exports.editOrder = async(req, res,next) => {
     try {
         let order_instance;
         if (req.query.status) {
-            order_instance = await order.findAll({
+            order_instance = await db.order.findAll({
             where: { user_id: user_id, status: req.query.status },
             raw:true
         })
         } else {
-            order_instance = await order.findAll({
+            order_instance = await db.order.findAll({
             where: { user_id: user_id},
             raw: true,
         });
         }
         
-        for (const order in order_instance){
-            contact = db.contact.findOne({where: {id:order.contact_id}})
+
+        for (var order of order_instance){
+            contact = await db.contact.findOne({where: {id:order.contact_id}})
             order.contact_name = contact.name
         }
 
