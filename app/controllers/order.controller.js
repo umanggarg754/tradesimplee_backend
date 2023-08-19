@@ -195,7 +195,19 @@ exports.getUserOrders = async (req, res,next) => {
         for (var order of order_instance){
             contact = await db.contact.findOne({where: {id:order.contact_id}})
             order.contact_name = contact.name
+
+            const products = await db.product.findAll({
+                where: { order_id: order.id },
+                });
+            
+            total_amount = 0
+            for(const product of products){
+                total_amount+=product.other_details.total_amount
+            }
+    
+            order.total_amount = total_amount
         }
+
 
         if (order_instance === null ) {
           return res.status(404).json({ msg: 'Order not found' });
