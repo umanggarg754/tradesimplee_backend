@@ -472,12 +472,16 @@ exports.createDesignList = async(req, res,next) => {
                 try{
                 other_details = product_instance.other_details;
                 product_instance.container = other_details.container;
-                product_instance.palletbboxes = other_details.palletbboxes;
+                product_instance.pallets = other_details.pallets;
+                product_instance.box = other_details.box
                 product_instance.pcsperbox = other_details.pcsperbox;
                 product_instance.sqm = other_details.sqm;
                 product_instance.brand = other_details.brand;
                 product_instance.grossweight = other_details.grossweight;
                 delete product_instance.other_details;
+                // "SR.
+               // O."	PRODUCT DESCRIPTION		CONTAINER	DESIGN PHOTO	PALLETS	BOXES	PCS PER BOX	BRAND	SQM	GROSS WEIGHT
+										
                 }catch (error) {
                     console.log(error);
                 }
