@@ -182,12 +182,18 @@ exports.editOrder = async(req, res,next) => {
         if (req.query.status) {
             order_instance = await order.findAll({
             where: { user_id: user_id, status: req.query.status },
+            raw:true
         })
         } else {
             order_instance = await order.findAll({
             where: { user_id: user_id},
             raw: true,
         });
+        }
+        
+        for (const order in order_instance){
+            contact = db.contact.findOne({where: {id:order.contact_id}})
+            order.contact_name = contact.name
         }
 
         if (order_instance === null ) {
