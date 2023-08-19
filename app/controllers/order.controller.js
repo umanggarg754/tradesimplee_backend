@@ -223,7 +223,8 @@ exports.getUserOrders = async (req, res,next) => {
 // get order details for user
 exports.getOrder = async (req, res,next) => {
     const user_id = parseInt(req.user.id);
-    const order_id = parseInt(req.params.id);
+    const order_id = parseInt(req.params.orderId);
+
 
     try {
         let order_instance;
