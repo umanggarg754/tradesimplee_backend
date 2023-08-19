@@ -5,6 +5,7 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
+const path = require('path');
 dotenv.config();
 
 var corsOptions = {
@@ -21,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));  // 
 //app.use(bodyParser.urlencoded({ extended: true }));
 //app.use(fileUpload());
-// app.use('/public', express.static('public'));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 const db = require("./app/models");
 db.sequelize.sync() 
