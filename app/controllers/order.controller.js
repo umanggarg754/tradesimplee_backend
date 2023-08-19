@@ -230,6 +230,7 @@ exports.getOrder = async (req, res,next) => {
         let order_instance;
         order_instance = await order.findOne({
             where: { user_id: parseInt(user_id), id: order_id },
+            raw:true
         });
         
 
@@ -238,8 +239,8 @@ exports.getOrder = async (req, res,next) => {
         }
 
         // Get the products associated with the order
-        const products = await product.findAll({
-        where: { order_id: order_id },
+        const products = await db.product.findAll({
+        where: { order_id: order_id }, raw:true
         });
 
         if (products === null ) {
