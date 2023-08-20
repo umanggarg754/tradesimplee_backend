@@ -52,5 +52,7 @@ module.exports = app => {
     router.get('/createPerforma/:orderId',users.authenticate,order.createPerformaInvoiceOrder);
     router.get('/createDesignList/:orderId',users.authenticate,order.createDesignList);
 
+    router.get('/getCurrency',users.authenticate,order.getCurrencies);
+
     app.use("/api/order", router);
   };

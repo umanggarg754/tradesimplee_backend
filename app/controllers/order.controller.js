@@ -507,3 +507,20 @@ exports.createDesignList = async(req, res,next) => {
     }
 
 };
+
+
+
+exports.getCurrencies = async(req,res,next)=>{
+    
+    try {
+
+        currencies = await db.currency.findAll({attributes:['currency'],raw:true});
+        res.status(200).json(currencies)
+    }
+    catch (error)
+    {
+        console.log(error);
+        res.status(500).json({ error: 'Could not create performa invoice order.' });
+    }
+
+};
