@@ -45,6 +45,7 @@ db.order = require("./order.model.js")(sequelize, Sequelize);
 db.product = require("./product.model.js")(sequelize, Sequelize);
 db.user_company = require("./user_company.model.js")(sequelize, Sequelize);
 db.currency = require("./currency.model.js")(sequelize, Sequelize);
+db.template = require("./user_template.model.js")(sequelize, Sequelize);
 // await tutorials.reload();
 // await users.reload();
 

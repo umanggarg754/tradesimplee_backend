@@ -48,6 +48,7 @@ require("./app/routes/user.routes")(app);
 require("./app/routes/company.routes")(app);
 require("./app/routes/contact.routes")(app);
 require("./app/routes/order.routes")(app);
+require("./app/routes/template.routes")(app);
 
 module.exports = app;
 
