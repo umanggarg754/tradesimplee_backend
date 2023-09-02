@@ -16,10 +16,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING
       },
       price: {
-        type: Sequelize.STRING
+        type: Sequelize.NUMBER
       },
       quantity: {
-        type: Sequelize.STRING
+        type: Sequelize.NUMBER
       },
       status: {
         type: Sequelize.STRING

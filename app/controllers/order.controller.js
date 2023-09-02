@@ -72,10 +72,6 @@ exports.createOrder = async(req, res,next) => {
             product_instance.order_id = order_id;
             // sno product_name price quantity status photo other_details 
 
-            if (!product_instance.price){
-                product_instance.price = null;
-            }
-
             if (!product_instance.status){
                 product_instance.status = null;
             }
@@ -258,6 +254,8 @@ exports.getOrder = async (req, res,next) => {
 
 
 
+
+
 // create performa invoice order with user's company details &
 // contact details and order and product details of a particular order and bank details 
 // also add total amount and total amount in words uing total amount key in prodcuts
@@ -351,8 +349,10 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
     try {
         total_amount = 0;
         for (const product_instance of product_details) {
-            total_amount += product_instance.totalamount;
+            total_amount += product_instance.price*product_instance.quantity;
         }
+        
+        console.log(total_amount)
 
         let localeCode = 'en-IN';
         if (order_details.currency == "INR"){
