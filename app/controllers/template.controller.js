@@ -79,12 +79,12 @@ exports.getTemplateDetail = async (req, res,next) => {
         return res.status(404).json({ msg: 'template not found' });
       }
 
-      columns = [];
-      for (const key of template_instance.details) {
-            columns.push(key.name);
-        }
-        console.log(columns);
-      res.status(200).json(columns);
+      // columns = [];
+      // for (const key of template_instance.details) {
+      //       columns.push(key.name);
+      //   }
+      //   console.log(columns);
+      res.status(200).json(template_instance);
     } catch (err) {
       console.log(err)
       res.status(500).json({ msg: 'Internal Server Error' });
