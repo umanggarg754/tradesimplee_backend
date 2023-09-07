@@ -11,7 +11,7 @@ exports.createCompany = async(req, res,next) => {
     user_id = parseInt(req.user.id)
     var company_instance = {
       name : req.body.name,
-      ic_number : req.body.ic_number,
+      iec_number : req.body.ic_number,
       gst_numberl : req.body.gst_number,
       pan: req.body.pan,
       address: req.body.address,
@@ -32,7 +32,7 @@ exports.editCompany = async(req, res,next) => {
   // allow only if owner in mappings table 
   var company_instance = {
     name : req.body.name,
-    ic_number : req.body.ic_number,
+    iec_number : req.body.ic_number,
     gst_numberl : req.body.gst_number,
     pan: req.body.pan,
     address: req.body.address,

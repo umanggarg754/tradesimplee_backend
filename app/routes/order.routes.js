@@ -49,8 +49,10 @@ module.exports = app => {
     router.get('/getUserOrders',users.authenticate,order.getUserOrders); 
     router.get('/getOrder/:orderId',users.authenticate,order.getOrder);
 
-    router.get('/createPerforma/:orderId',users.authenticate,order.createPerformaInvoiceOrder);
+    //router.get('/createPerforma/:orderId',users.authenticate,order.createPerformaInvoiceOrder);
     router.get('/createDesignList/:orderId',users.authenticate,order.createDesignList);
+
+    router.get('/createDocument/:orderId/:docTemplateId',users.authenticate,order.createDocument);
 
     router.get('/getCurrency',users.authenticate,order.getCurrencies);
 

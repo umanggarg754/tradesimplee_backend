@@ -1,5 +1,5 @@
 const db = require("../models");
-const template = db.template;
+const doc_template = db.doc_template;
 const Op = db.Sequelize.Op;
 
 
@@ -30,10 +30,11 @@ exports.addTemplate = async(req, res,next) => {
         name : req.body.name,
         company_id : company_id,
         user_id: user_id, 
-        details: req.body.details
+        details: req.body.details,
+        type: req.body.type
         };
         console.log(template_instance)
-        created_template = await template.create(template_instance);
+        created_template = await doc_template.create(template_instance);
         res.status(201).json(created_template);
     }catch (err){
         res.status(404).json({error:"Template not created"})
@@ -51,7 +52,7 @@ exports.getTemplates = async (req, res,next) => {
     try {
         let templates;
       
-        templates = await template.findAll({
+        templates = await doc_template.findAll({
             where: { company_id: company_id },
             attributes:['name','id'], 
             raw:true
@@ -75,7 +76,7 @@ exports.getTemplateDetail = async (req, res,next) => {
       company_id = await get_company_id(user_id);
       console.log(user_id,template_id,company_id)
 
-      template_instance = await template.findOne({
+      template_instance = await doc_template.findOne({
           where: { company_id: company_id, id: template_id }, raw:true
         });
       //console.log(template_instance);
@@ -84,11 +85,6 @@ exports.getTemplateDetail = async (req, res,next) => {
         return res.status(404).json({ msg: 'template not found' });
       }
 
-      // columns = [];
-      // for (const key of template_instance.details) {
-      //       columns.push(key.name);
-      //   }
-      //   console.log(columns);
       res.status(200).json(template_instance);
     } catch (err) {
       console.log(err)

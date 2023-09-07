@@ -3,6 +3,10 @@ const order = db.order;
 const product = db.product;
 const Op = db.Sequelize.Op;
 const { ToWords } = require('to-words');
+const { getTemplateDetail } = require("./doc_template.controller");
+
+
+
 
 
 
@@ -254,106 +258,31 @@ exports.getOrder = async (req, res,next) => {
 
 
 
+//   Name
+//   Check boxes	Comapny name address
+//       Date
+//       Order number
+//       invoice number
+//       consignee details
+//       bank details
+//       IEC number 
+//   drop dowm	select from order templates -- name of template
+      
+//   list of columns with check boxes	
+      
+//   customer_notes	
+//   terms_and_condititons	
 
 
-// create performa invoice order with user's company details &
-// contact details and order and product details of a particular order and bank details 
-// also add total amount and total amount in words uing total amount key in prodcuts
-exports.createPerformaInvoiceOrder = async(req, res,next) => {
-    const user_id = parseInt(req.user.id);
-    const order_id = parseInt(req.params.orderId);
-    
-    // get company details of user 
-    try {
-        company = await db.user_company.findOne({
-            where: { user_id: user_id},
-        });
-        company_details = await db.company.findOne({ 
-            where: { id: company.company_id },
-        });
 
-        if (company_details === null ) {
-            return res.status(404).json({ msg: 'Company details not found' });
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Could not get company details.' });
-    }
-
-
-    // get order details of user
-    console.log(user_id,order_id)
-    try {
-        order_details = await order.findOne({
-            where: { user_id: user_id, id: order_id },
-        });
-        if (order_details === null ) {
-            return res.status(404).json({ msg: 'Order details not found' });
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Could not get order details.' });
-    }
-
-
-    // get contact details of user based on order.contact_id
-    try {
-        contact_details = await db.contact.findOne({
-            where: { user_id: user_id, id: order_details.contact_id },
-        });
-        if (contact_details === null ) {
-            return res.status(404).json({ msg: 'Contact details not found' });
-        }
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Could not get contact details.' });
-    }
-
-    // get prouct details of order 
-    fields_for_proforma = ['id', 'serial_num', 'product_name', 'other_details']
-    extract_from_other_details = ['marksandnums','packing','box','sqm','pricepersqm','totalamount']
-    // "MARKS &
-    // NOS"	SR. NO	DESCRIPTION					PACKING	BOX	SQM	PRICE PER SQM	TOTAL AMOUNT
-    try {
-        product_details = await product.findAll({
-            where: { order_id: order_id },
-            attributes: fields_for_proforma, 
-            raw: true,
-        });
-        if (product_details === null ) {
-            return res.status(404).json({ msg: 'Product details not found' });
-        }else{
-            for (const product_instance of product_details) {
-                try{
-                other_details = product_instance.other_details;
-                product_instance.marksandnums = other_details.marksandnums;
-                product_instance.packing = other_details.packing;
-                product_instance.box = other_details.box;
-                product_instance.sqm = other_details.sqm;
-                product_instance.pricepersqm = other_details.pricepersqm;
-                product_instance.totalamount = other_details.totalamount;
-                delete product_instance.other_details;
-                }catch (error) {
-                    console.log(error);
-                }
-            }
-        }
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Could not get product details.' });
-    }
-    
-    // create total in words and numbers usig prouct details
+// total async fuction 
+function getTotalAmount(product_details){
     try {
         total_amount = 0;
         for (const product_instance of product_details) {
             total_amount += product_instance.price*product_instance.quantity;
         }
-        
         console.log(total_amount)
-
         let localeCode = 'en-IN';
         if (order_details.currency == "INR"){
             localeCode = 'en-IN';
@@ -390,30 +319,162 @@ exports.createPerformaInvoiceOrder = async(req, res,next) => {
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ error: 'Could not get total amount.' });
     }
 
-    // get bank details of user
+    return [total_amount,total_amount_in_words];
+};
 
-    // create performa invoice order
+
+
+exports.createDocument = async(req, res,next) => {
+    const user_id = parseInt(req.user.id);
+    const order_id = parseInt(req.params.orderId);
+    const doc_template_id = parseInt(req.params.docTemplateId);
+
+    final_doc = {}
+
+    //doc_template_details = await getTemplateDetail();
+    //console.log(doc_template_details);
+
+    list_of_general_details  = ['company_name_address','date','order_number','invoice_number','consignee_details',
+    'bank_details','IEC_number','customer_notes','terms_and_conditions']
+    
+    // get doctemplate details 
+    try{
+        doc_template_details = await db.doc_template.findOne({
+            where: { id: doc_template_id },
+            raw:true
+        });
+    }catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Could not get doc template details.' });
+    }
+
+    console.log(doc_template_details);
+
+    // get company details of user
     try {
-        const performa_invoice_order = {
-            company_details: company_details,
-            order_details: order_details,
-            contact_details: contact_details,
-            product_details: product_details,
-            total_amount: total_amount,
-            total_amount_in_words: total_amount_in_words,
-        };
-        res.status(200).json(performa_invoice_order);
+        company = await db.user_company.findOne({
+            where: { user_id: user_id},
+        });
+        company_details = await db.company.findOne({ 
+            where: { id: company.company_id },
+        });
+
+        if (company_details === null ) {
+            return res.status(404).json({ msg: 'Company details not found' });
+        }
+
+        if (doc_template_details.details.general_details.includes('company_name_address')){
+            final_doc.company_name = company_details.name;
+            final_doc.company_address = company_details.address;
+        }
+
+        if (doc_template_details.details.general_details.includes('IEC_number')){
+            final_doc.IEC_number = company_details.iec_number;
+        }
+
+        if (doc_template_details.details.general_details.includes('bank_details')){
+            final_doc.bank_details = company_details.bank_details;
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Could not get company details.' });
+    }
+
+
+    // get order details 
+    try {
+        order_details = await order.findOne({
+            where: { user_id: user_id, id: order_id },
+        });
+
+        if (order_details === null ) {
+            return res.status(404).json({ msg: 'Order details not found' });
+        }
+
+        //'date','order_number','invoice_number','consignee_details',
+
+        if (doc_template_details.details.general_details.includes('date')){
+            final_doc.date = order_details.date;
+        }
+
+        if (doc_template_details.details.general_details.includes('order_number')){
+            final_doc.order_number = order_details.order_number;
+        }
+
+        if (doc_template_details.details.general_details.includes('invoice_number')){
+            final_doc.invoice_number = order_details.invoice_number;
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Could not get order details.' });
+    }
+
+    // get contact details of user based on order.contact_id
+    if (doc_template_details.details.general_details.includes('consignee_details')){
+        try {
+            contact_details = await db.contact.findOne({
+                where: { user_id: user_id, id: order_details.contact_id },
+                attributes:['name','company','city','country'],
+                raw:true,
+            });
+            if (contact_details === null ) {
+                return res.status(404).json({ msg: 'Contact details not found' });
+            }else{
+                final_doc.consignee_details = contact_details;
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // get prouct details of order
+    try {
+        product_details = await product.findAll({
+            where: { order_id: order_id },
+            raw: true,
+        });
+        
+        if (product_details === null ) {
+            return res.status(404).json({ msg: 'Product details not found' });
+        }else{
+            for (const product_instance of product_details){
+                other_details = product_instance.other_details;
+                //console.log(product_details);
+                for(const key in doc_template_details.details.product_details){
+                    if (key in other_details){
+                        product_instance[key] = other_details[key];
+                    }
+                }
+                delete product_instance.other_details;
+            }
+            final_doc.prodcuts = product_details;
+        }
+    }catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Could not get product details.' });
+    }
+
+    if (doc_template_details.details.product_details.includes('price')){
+        [total_amount, total_amount_in_words] = getTotalAmount(product_details);
+        final_doc.total_amount = total_amount;
+        final_doc.total_amount_in_words = total_amount_in_words;
+    }
+
+    try {
+        res.status(200).json(final_doc);
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ error: 'Could not create performa invoice order.' });
+        res.status(500).json({ error: 'Could not create document order.' });
     }
 
 };
-
+  
 
 
 

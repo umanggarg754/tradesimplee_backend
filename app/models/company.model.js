@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
       name: {
         type: Sequelize.STRING
       },
-      ic_number: {
+      iec_number: {
         type: Sequelize.STRING
       },
       gst: {
