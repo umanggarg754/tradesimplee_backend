@@ -202,10 +202,10 @@ exports.getUserOrders = async (req, res,next) => {
             
             total_amount = 0
             for(const product of products){
-                total_amount+=product.other_details.total_amount
+                total_amount+=product.price*product.quantity
             }
-    
-            order.total_amount = total_amount
+
+            order.total_amount = total_amount.toString() + ' ' + order.currency
         }
 
 
