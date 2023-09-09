@@ -54,7 +54,7 @@ exports.getTemplates = async (req, res,next) => {
       
         templates = await doc_template.findAll({
             where: { company_id: company_id },
-            attributes:['name','id'], 
+            attributes:['name','id','type'], 
             raw:true
         });
         console.log(templates);
