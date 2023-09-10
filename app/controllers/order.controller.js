@@ -435,7 +435,8 @@ exports.createDocument = async(req, res,next) => {
     // get prouct details of order
     try {
         product_details = await product.findAll({
-            where: { order_id: order_id },
+            where: { order_id: order_id }, // order_id created id 
+            attributes: ['serial_num', 'product_name', 'price', 'quantity', 'photo','other_details'],
             raw: true,
         });
         
