@@ -460,7 +460,7 @@ exports.createDocument = async(req, res,next) => {
         res.status(500).json({ error: 'Could not get product details.' });
     }
 
-    if (doc_template_details.details.product_details.includes('price')){
+    if (doc_template_details.details.product_details.includes('price') && doc_template_details.details.product_details.includes('quantity')){
         [total_amount, total_amount_in_words] = getTotalAmount(product_details);
         final_doc.total_amount = total_amount;
         final_doc.total_amount_in_words = total_amount_in_words;
