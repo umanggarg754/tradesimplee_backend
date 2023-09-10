@@ -10,7 +10,7 @@ module.exports = app => {
     router.get('/getUserTemplates',users.authenticate,template.getTemplates);  
     router.get('/getUserTemplates/:templateId',users.authenticate,template.getTemplateDetail);
 
-    //router.put("/editTemplate/:templateId", users.authenticate,contact.editContact);
+    router.put("/editTemplate/:templateId", users.authenticate,template.editTemplate);
     // get one contact 
   
     // // Delete a Tutorial with id

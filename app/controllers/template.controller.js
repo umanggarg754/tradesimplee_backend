@@ -42,6 +42,31 @@ exports.addTemplate = async(req, res,next) => {
 
 
 
+exports.editTemplate = async(req, res,next) => {
+    user_id = parseInt(req.user.id);
+    template_id = parseInt(req.params.templateId);
+    //res.status(201).json(req.body);
+
+    copmany_id = await get_company_id(user_id);
+    //add new user and return 201
+
+    try{
+        var template_instance = {
+        name : req.body.name,
+        company_id : company_id,
+        user_id: user_id, 
+        details: req.body.details
+        };
+        console.log(template_instance)
+        // created_template = await template.update(template_instance);
+        updated_template = await template.update(template_instance,{where:{id:template_id}}); 
+        res.status(201).json(updated_template);
+    }catch (err){
+        res.status(404).json({error:"Template not created"})
+    }
+  };
+
+
 exports.getTemplates = async (req, res,next) => {
 
     const user_id = parseInt(req.user.id);
