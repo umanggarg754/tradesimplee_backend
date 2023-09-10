@@ -452,7 +452,7 @@ exports.createDocument = async(req, res,next) => {
                 }
                 delete product_instance.other_details;
             }
-            final_doc.prodcuts = product_details;
+            final_doc.products = product_details;
         }
     }catch (error) {
         console.log(error);
