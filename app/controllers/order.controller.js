@@ -43,7 +43,8 @@ exports.createOrder = async(req, res,next) => {
             date: new Date(req.body.date), //
             customer_notes: req.body.customer_notes, //
             terms_and_conditions: req.body.terms_and_conditions, //
-            currency: req.body.currency //
+            currency: req.body.currency, //
+            user_template_id: req.body.user_template_id
             };
         created_order = await order.create(order_instance);  
         } catch (err) {
@@ -128,7 +129,8 @@ exports.editOrder = async(req, res,next) => {
             date: new Date(req.body.date), //
             customer_notes: req.body.customer_notes, //
             terms_and_conditions: req.body.terms_and_conditions, //
-            currency: req.body.currency //
+            currency: req.body.currency,
+            user_template_id: req.body.user_template_id
             };
         created_order = await order.update(order_instance,{where:{id:order_id}});
     } catch (err) {
@@ -335,6 +337,8 @@ exports.createDocument = async(req, res,next) => {
 
     //doc_template_details = await getTemplateDetail();
     //console.log(doc_template_details);
+
+    // identify price and quantity field from prodcut template 
 
     list_of_general_details  = ['company_name_address','date','order_number','invoice_number','consignee_details',
     'bank_details','IEC_number','customer_notes','terms_and_conditions']

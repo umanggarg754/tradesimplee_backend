@@ -46,6 +46,9 @@ module.exports = (sequelize, Sequelize) => {
           currency: {
         type: Sequelize.STRING
           },
+          user_template_id: {
+        type: Sequelize.INTEGER
+          }
     },{
       timestamps: true,
       updatedAt: false,
