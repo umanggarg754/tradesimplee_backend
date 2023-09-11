@@ -445,10 +445,13 @@ exports.createDocument = async(req, res,next) => {
         }else{
             for (const product_instance of product_details){
                 other_details = product_instance.other_details;
-                //console.log(product_details);
-                for(const key in doc_template_details.details.product_details){
-                    if (key in other_details){
-                        product_instance[key] = other_details[key];
+                //console.log(other_details);
+                for(const key of doc_template_details.details.product_details){
+                    lower_key = key.toLowerCase();
+                    //console.log(lower_key,other_details)
+                    if (lower_key in other_details){
+                        //console.log(other_details[lower_key]);
+                        product_instance[lower_key] = other_details[lower_key];
                     }
                 }
                 delete product_instance.other_details;
