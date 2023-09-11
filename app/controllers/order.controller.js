@@ -365,7 +365,7 @@ exports.createDocument = async(req, res,next) => {
             return res.status(404).json({ msg: 'Company details not found' });
         }
 
-        if (doc_template_details.details.general_details.includes('company_name_address')){
+        if (doc_template_details.details.general_details.includes('Company Address')){
             final_doc.company_name = company_details.name;
             final_doc.company_address = company_details.address;
         }
@@ -374,7 +374,7 @@ exports.createDocument = async(req, res,next) => {
             final_doc.IEC_number = company_details.iec_number;
         }
 
-        if (doc_template_details.details.general_details.includes('bank_details')){
+        if (doc_template_details.details.general_details.includes('Bank Details')){
             final_doc.bank_details = company_details.bank_details;
         }
 
@@ -396,15 +396,15 @@ exports.createDocument = async(req, res,next) => {
 
         //'date','order_number','invoice_number','consignee_details',
 
-        if (doc_template_details.details.general_details.includes('date')){
+        if (doc_template_details.details.general_details.includes('Date')){
             final_doc.date = order_details.date;
         }
 
-        if (doc_template_details.details.general_details.includes('order_number')){
+        if (doc_template_details.details.general_details.includes('Order Number')){
             final_doc.order_number = order_details.order_number;
         }
 
-        if (doc_template_details.details.general_details.includes('invoice_number')){
+        if (doc_template_details.details.general_details.includes('Invoice Number')){
             final_doc.invoice_number = order_details.invoice_number;
         }
 
@@ -414,7 +414,7 @@ exports.createDocument = async(req, res,next) => {
     }
 
     // get contact details of user based on order.contact_id
-    if (doc_template_details.details.general_details.includes('consignee_details')){
+    if (doc_template_details.details.general_details.includes('Consignee Detail')){
         try {
             contact_details = await db.contact.findOne({
                 where: { user_id: user_id, id: order_details.contact_id },
