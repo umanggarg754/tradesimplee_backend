@@ -31,12 +31,14 @@ exports.addTemplate = async(req, res,next) => {
         company_id : company_id,
         user_id: user_id, 
         details: req.body.details,
-        type: req.body.type
+        type: req.body.type,
+        user_template_id: req.body.user_template_id
         };
         console.log(template_instance)
         created_template = await doc_template.create(template_instance);
         res.status(201).json(created_template);
     }catch (err){
+        console.log(err)
         res.status(404).json({error:"Template not created"})
     }
   };
@@ -57,7 +59,8 @@ exports.editTemplate = async(req, res,next) => {
         company_id : company_id,
         user_id: user_id, 
         details: req.body.details,
-        type: req.body.type
+        type: req.body.type,
+        user_template_id: req.body.user_template_id
         };
         console.log(template_instance)
         updated_template = await doc_template.update(template_instance,{where:{id:template_id}}); 
