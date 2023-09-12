@@ -392,7 +392,10 @@ exports.createDocument = async(req, res,next) => {
     try {
         order_details = await order.findOne({
             where: { user_id: user_id, id: order_id },
+            raw:true
         });
+
+        console.log(order_details);
 
         if (order_details === null ) {
             return res.status(404).json({ msg: 'Order details not found' });
@@ -436,6 +439,20 @@ exports.createDocument = async(req, res,next) => {
         }
     }
 
+    // get template for order
+    try{
+        user_template_details = await db.template.findOne({
+            where: { id: order_details.user_template_id }, // 
+            raw:true
+        });
+        if (user_template_details === null ) {
+            return res.status(404).json({ msg: 'User template details not found' });
+        }
+    }catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Could not get user template details.' });
+    }
+
     // get prouct details of order
     try {
         product_details = await product.findAll({
@@ -443,6 +460,7 @@ exports.createDocument = async(req, res,next) => {
             attributes: ['serial_num', 'product_name', 'price', 'quantity', 'photo','other_details'],
             raw: true,
         });
+        
         
         if (product_details === null ) {
             return res.status(404).json({ msg: 'Product details not found' });
@@ -460,18 +478,59 @@ exports.createDocument = async(req, res,next) => {
                 }
                 delete product_instance.other_details;
             }
-            final_doc.products = product_details;
+            
         }
     }catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Could not get product details.' });
     }
 
+    // loop over all template_details.details from the fourth index and create total from 
+    // product_details if the field is present in product_details and is of type number 
+    // and add it to product_details array 
+    
+    const lowercaseProductDetails = doc_template_details.details.product_details.map(item => item.toLowerCase());
+    console.log(lowercaseProductDetails);
+
+    totals = {}
+    console.log(user_template_details.details)
+    for (let i = 1; i < user_template_details.details.length; i++) {
+        const detail = user_template_details.details[i];
+        console.log(detail);
+        if (detail['type'] == 'number' || detail['type'] == 'NUMBER'){
+            lower_key = detail['name'].toLowerCase();
+            console.log(lower_key);
+            totals[lower_key] = 0;
+            for (const product_instance of product_details){
+                totals[lower_key] += parseInt(product_instance[lower_key]);
+            }
+        }else{
+            continue;
+        }
+        
+    }
+
+    console.log(totals);
+    doc_totals = {}
+    for (const key in product_details[0]){
+        if (key in totals){
+            doc_totals[key] = totals[key];
+        }else{
+            doc_totals[key] = '';
+        }
+    }
+    doc_totals['product_name'] = 'Total';
+    console.log(doc_totals);
+    product_details.push(doc_totals);
+    final_doc.products = product_details;
+
+    console.log(doc_template_details.details.product_details);
     if (doc_template_details.details.product_details.includes('price') && doc_template_details.details.product_details.includes('quantity')){
         [total_amount, total_amount_in_words] = getTotalAmount(product_details);
         final_doc.total_amount = total_amount;
         final_doc.total_amount_in_words = total_amount_in_words;
     }
+
 
     try {
         res.status(200).json(final_doc);
