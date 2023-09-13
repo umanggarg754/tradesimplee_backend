@@ -13,7 +13,9 @@ const { getTemplateDetail } = require("./doc_template.controller");
 function trasform_to_other_details(product_instance){
     fixed_keys = ['serial_num', 'product_name', 'price', 'quantity', 'status', 'photo','order_id']
     var other_details = {}
+    console.log(product_instance);
     var keys = Object.keys(product_instance);
+    console.log(keys);
     for (const key of keys) {
         if (!fixed_keys.includes(key)){
             other_details[key] = product_instance[key];
@@ -278,11 +280,11 @@ exports.getOrder = async (req, res,next) => {
 
 
 // total async fuction 
-function getTotalAmount(product_details){
+function getTotalAmount(product_details,price_column,quantity_column){
     try {
         total_amount = 0;
         for (const product_instance of product_details) {
-            total_amount += product_instance.price*product_instance.quantity;
+            total_amount += product_instance[price_column]*product_instance[quantity_column];
         }
         console.log(total_amount)
         let localeCode = 'en-IN';
@@ -395,7 +397,7 @@ exports.createDocument = async(req, res,next) => {
             raw:true
         });
 
-        console.log(order_details);
+        //console.log(order_details);
 
         if (order_details === null ) {
             return res.status(404).json({ msg: 'Order details not found' });
@@ -452,6 +454,9 @@ exports.createDocument = async(req, res,next) => {
         console.log(error);
         res.status(500).json({ error: 'Could not get user template details.' });
     }
+    //console.log(user_template_details.details[1]);
+    const quantity_column = user_template_details.details[1]['name'];
+    const price_column = user_template_details.details[2]['name'];
 
     // get prouct details of order
     try {
@@ -469,8 +474,14 @@ exports.createDocument = async(req, res,next) => {
                 // 'price', 'quantity', 'photo'
                 if (!doc_template_details.details.product_details.includes('price')){
                     delete product_instance.price;
+                }else{
+                    product_instance[price_column] = product_instance.price;
+                    delete product_instance.price;
                 }
                 if (!doc_template_details.details.product_details.includes('quantity')){
+                    delete product_instance.quantity;
+                }else{
+                    product_instance[quantity_column] = product_instance.quantity;
                     delete product_instance.quantity;
                 }
                 if (!doc_template_details.details.product_details.includes('photo')){
@@ -478,10 +489,10 @@ exports.createDocument = async(req, res,next) => {
                 }
 
                 other_details = product_instance.other_details;
-                //console.log(other_details);
+                console.log(doc_template_details.details.product_details);
                 for(const key of doc_template_details.details.product_details){
                     lower_key = key.toLowerCase();
-                    //console.log(lower_key,other_details)
+                    console.log(lower_key)
                     if (lower_key in other_details){
                         //console.log(other_details[lower_key]);
                         product_instance[lower_key] = other_details[lower_key];
@@ -501,7 +512,7 @@ exports.createDocument = async(req, res,next) => {
     // and add it to product_details array 
     
     const lowercaseProductDetails = doc_template_details.details.product_details.map(item => item.toLowerCase());
-    console.log(lowercaseProductDetails);
+    //console.log(lowercaseProductDetails);
 
     totals = {}
     console.log(user_template_details.details)
@@ -521,7 +532,7 @@ exports.createDocument = async(req, res,next) => {
         
     }
 
-    console.log(totals);
+    //console.log(totals);
     doc_totals = {}
     for (const key in product_details[0]){
         if (key in totals){
@@ -531,11 +542,11 @@ exports.createDocument = async(req, res,next) => {
         }
     }
     doc_totals['product_name'] = 'Total';
-    console.log(doc_totals);
+    //console.log(doc_totals);
 
     console.log(doc_template_details.details.product_details);
     if (doc_template_details.details.product_details.includes('price') && doc_template_details.details.product_details.includes('quantity')){
-        [total_amount, total_amount_in_words] = getTotalAmount(product_details);
+        [total_amount, total_amount_in_words] = getTotalAmount(product_details,price_column,quantity_column);
         final_doc.total_amount = total_amount;
         final_doc.total_amount_in_words = total_amount_in_words;
     }
