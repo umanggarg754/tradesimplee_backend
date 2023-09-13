@@ -466,6 +466,17 @@ exports.createDocument = async(req, res,next) => {
             return res.status(404).json({ msg: 'Product details not found' });
         }else{
             for (const product_instance of product_details){
+                // 'price', 'quantity', 'photo'
+                if (!doc_template_details.details.product_details.includes('price')){
+                    delete product_instance.price;
+                }
+                if (!doc_template_details.details.product_details.includes('quantity')){
+                    delete product_instance.quantity;
+                }
+                if (!doc_template_details.details.product_details.includes('photo')){
+                    delete product_instance.photo;
+                }
+
                 other_details = product_instance.other_details;
                 //console.log(other_details);
                 for(const key of doc_template_details.details.product_details){
@@ -521,8 +532,6 @@ exports.createDocument = async(req, res,next) => {
     }
     doc_totals['product_name'] = 'Total';
     console.log(doc_totals);
-    product_details.push(doc_totals);
-    final_doc.products = product_details;
 
     console.log(doc_template_details.details.product_details);
     if (doc_template_details.details.product_details.includes('price') && doc_template_details.details.product_details.includes('quantity')){
@@ -530,6 +539,11 @@ exports.createDocument = async(req, res,next) => {
         final_doc.total_amount = total_amount;
         final_doc.total_amount_in_words = total_amount_in_words;
     }
+
+
+    product_details.push(doc_totals);
+    final_doc.products = product_details;
+
 
 
     try {
@@ -642,7 +656,7 @@ exports.getCurrencies = async(req,res,next)=>{
     
     try {
 
-        currencies = await db.currency.findAll({attributes:['currency'],raw:true});
+        currencies = await db.currency.findAll({attributes:['currency','id'],raw:true});
         res.status(200).json(currencies)
     }
     catch (error)
