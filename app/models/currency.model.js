@@ -10,6 +10,9 @@ module.exports = (sequelize, Sequelize) => {
       },
       conversion_value: {
         type: Sequelize.INTEGER
+      },
+      locale:{
+        type: Sequelize.STRING
       }
     },
     {

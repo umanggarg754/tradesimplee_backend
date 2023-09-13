@@ -280,42 +280,16 @@ exports.getOrder = async (req, res,next) => {
 
 
 // total async fuction 
-function getTotalAmount(product_details,price_column,quantity_column){
+function getTotalAmount(product_details,price_column,quantity_column,currency_local){
     try {
         total_amount = 0;
         for (const product_instance of product_details) {
             total_amount += product_instance[price_column]*product_instance[quantity_column];
         }
         console.log(total_amount)
-        let localeCode = 'en-IN';
-        if (order_details.currency == "INR"){
-            localeCode = 'en-IN';
-        }else if (order_details.currency == "USD"){
-            localeCode = 'en-US';
-        }else if (order_details.currency == "EUR"){
-            localeCode = 'en-EU';
-        }else if (order_details.currency == "GBP"){
-            localeCode = 'en-GB';
-        }else if (order_details.currency == "AUD"){
-            localeCode = 'en-AU';
-        }else if (order_details.currency == "CAD"){
-            localeCode = 'en-CA';
-        }else if (order_details.currency == "SGD"){
-            localeCode = 'en-SG';
-        }else if (order_details.currency == "JPY"){
-            localeCode = 'en-JP';
-        }else if (order_details.currency == "CNY"){
-            localeCode = 'en-CN';
-        }else if (order_details.currency == "NZD"){
-            localeCode = 'en-NZ';
-        }else if (order_details.currency == "CHF"){
-            localeCode = 'en-CH';
-        }else{
-            localeCode = 'en-IN';
-        }
 
         if (total_amount){
-            const toWords = new ToWords({localeCode: localeCode, converterOptions: {currency: true}});
+            const toWords = new ToWords({localeCode: currency_local, converterOptions: {currency: true}});
             total_amount_in_words = toWords.convert(total_amount, { currency: true });
         }else{
             total_amount_in_words = '';
@@ -489,13 +463,14 @@ exports.createDocument = async(req, res,next) => {
                 }
 
                 other_details = product_instance.other_details;
-                console.log(doc_template_details.details.product_details);
+                //console.log(doc_template_details.details.product_details);
                 for(const key of doc_template_details.details.product_details){
-                    lower_key = key.toLowerCase();
-                    console.log(lower_key)
-                    if (lower_key in other_details){
+                    // lower_key = key.toLowerCase();
+                    //console.log(lower_key)
+                    if (key in other_details){
                         //console.log(other_details[lower_key]);
-                        product_instance[lower_key] = other_details[lower_key];
+                        //product_instance[lower_key] = other_details[lower_key];
+                        product_instance[key] = other_details[key];
                     }
                 }
                 delete product_instance.other_details;
@@ -511,16 +486,16 @@ exports.createDocument = async(req, res,next) => {
     // product_details if the field is present in product_details and is of type number 
     // and add it to product_details array 
     
-    const lowercaseProductDetails = doc_template_details.details.product_details.map(item => item.toLowerCase());
+    //const lowercaseProductDetails = doc_template_details.details.product_details.map(item => item.toLowerCase());
     //console.log(lowercaseProductDetails);
 
     totals = {}
-    console.log(user_template_details.details)
+    //console.log(user_template_details.details)
     for (let i = 1; i < user_template_details.details.length; i++) {
         const detail = user_template_details.details[i];
         console.log(detail);
         if (detail['type'] == 'number' || detail['type'] == 'NUMBER'){
-            lower_key = detail['name'].toLowerCase();
+            lower_key = detail['name'] //.toLowerCase();
             console.log(lower_key);
             totals[lower_key] = 0;
             for (const product_instance of product_details){
@@ -544,9 +519,21 @@ exports.createDocument = async(req, res,next) => {
     doc_totals['product_name'] = 'Total';
     //console.log(doc_totals);
 
-    console.log(doc_template_details.details.product_details);
+    // currency detail 
+    try{
+        currency_details = await db.currency.findOne({
+            where: { id: parseInt(order_details.currency) }, 
+            raw:true
+        });
+    }catch (error) {
+        console.log(error);
+    }
+
+    console.log(currency_details);
+
+    //console.log(doc_template_details.details.product_details);
     if (doc_template_details.details.product_details.includes('price') && doc_template_details.details.product_details.includes('quantity')){
-        [total_amount, total_amount_in_words] = getTotalAmount(product_details,price_column,quantity_column);
+        [total_amount, total_amount_in_words] = getTotalAmount(product_details,price_column,quantity_column,currency_details.locale);
         final_doc.total_amount = total_amount;
         final_doc.total_amount_in_words = total_amount_in_words;
     }
