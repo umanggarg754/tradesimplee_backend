@@ -493,10 +493,11 @@ exports.createDocument = async(req, res,next) => {
     //console.log(user_template_details.details)
     for (let i = 1; i < user_template_details.details.length; i++) {
         const detail = user_template_details.details[i];
-        console.log(detail);
-        if (detail['type'] == 'number' || detail['type'] == 'NUMBER'){
-            lower_key = detail['name'] //.toLowerCase();
-            console.log(lower_key);
+        //console.log(detail);
+        lower_key = detail['name'] //.toLowerCase();
+        if ((detail['type'] == 'number' || detail['type'] == 'NUMBER')
+         && lower_key != quantity_column && lower_key != price_column) {
+            //console.log(lower_key,quantity_column,price_column);
             totals[lower_key] = 0;
             for (const product_instance of product_details){
                 totals[lower_key] += parseInt(product_instance[lower_key]);
