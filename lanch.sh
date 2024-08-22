@@ -28,7 +28,7 @@ sudo git config --global --add safe.directory /var/www/html/tradesimplee_backend
 
 
 
-# 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
+
 
 # backend 
 forever start --minUptime 1000 --spinSleepTime 1000 index.js
